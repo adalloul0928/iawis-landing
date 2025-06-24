@@ -30,13 +30,13 @@ Creating a "coming soon" landing page for a young hip clothing brand with a mode
 ### UI & Styling (PARTIALLY COMPLETE)
 
 - [x] Tailwind CSS v4
-- [ ] **shadcn/ui** components
+- [x] **shadcn/ui** components
 - [ ] **Framer Motion** for animations
 
 ### Data Management (TO BE INSTALLED)
 
-- [ ] **TanStack Query** for server state management
-- [ ] **React Hook Form** for form handling
+- [x] **TanStack Query** for server state management
+- [x] **React Hook Form** for form handling
 
 ### Backend & Database (TO BE SETUP)
 

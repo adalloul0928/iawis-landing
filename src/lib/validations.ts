@@ -8,7 +8,13 @@ export const contactFormSchema = z.object({
 });
 
 export const newsletterSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
+  email: z
+    .string()
+    .min(1, { message: "Email is required" })
+    .email({ message: "Please enter a valid email address" })
+    .max(254, { message: "Email address is too long" })
+    .toLowerCase()
+    .trim(),
 });
 
 export const userProfileSchema = z.object({

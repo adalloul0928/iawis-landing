@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -15,20 +14,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useNewsletterSubscription } from "@/hooks/use-newsletter";
 import { type NewsletterData, newsletterSchema } from "@/lib/validations";
-
-// Mock API function - replace with actual implementation
-async function subscribeToNewsletter(_data: NewsletterData) {
-  // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 800));
-
-  // Simulate random success/failure for demo
-  if (Math.random() > 0.9) {
-    throw new Error("Failed to subscribe. Please try again.");
-  }
-
-  return { success: true, message: "Successfully subscribed to newsletter!" };
-}
 
 interface NewsletterFormProps {
   compact?: boolean;
@@ -42,19 +29,20 @@ export function NewsletterForm({ compact = false }: NewsletterFormProps) {
     },
   });
 
-  const mutation = useMutation({
-    mutationFn: subscribeToNewsletter,
-    onSuccess: (data) => {
-      toast.success(data.message);
-      form.reset();
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
+  const subscription = useNewsletterSubscription();
 
   function onSubmit(values: NewsletterData) {
-    mutation.mutate(values);
+    subscription.mutate(values.email, {
+      onSuccess: () => {
+        toast.success(
+          "Thanks for subscribing! Please check your email to confirm your subscription.",
+        );
+        form.reset();
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    });
   }
 
   if (compact) {
@@ -77,8 +65,8 @@ export function NewsletterForm({ compact = false }: NewsletterFormProps) {
               </FormItem>
             )}
           />
-          <Button type="submit" disabled={mutation.isPending}>
-            {mutation.isPending ? "..." : "Subscribe"}
+          <Button type="submit" disabled={subscription.isPending}>
+            {subscription.isPending ? "..." : "Subscribe"}
           </Button>
         </form>
       </Form>
@@ -106,8 +94,14 @@ export function NewsletterForm({ compact = false }: NewsletterFormProps) {
           )}
         />
 
-        <Button type="submit" disabled={mutation.isPending} className="w-full">
-          {mutation.isPending ? "Subscribing..." : "Subscribe to Newsletter"}
+        <Button
+          type="submit"
+          disabled={subscription.isPending}
+          className="w-full"
+        >
+          {subscription.isPending
+            ? "Subscribing..."
+            : "Subscribe to Newsletter"}
         </Button>
       </form>
     </Form>
