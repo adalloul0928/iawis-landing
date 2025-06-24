@@ -24,9 +24,9 @@
     "types": ["vitest/globals", "@testing-library/jest-dom"]
   },
   "include": [
-    "next-env.d.ts", 
-    "**/*.ts", 
-    "**/*.tsx", 
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
     ".next/types/**/*.ts",
     "vitest-testing-library-matchers.d.ts",
     "./src/tests/setup-test-environment.ts"
