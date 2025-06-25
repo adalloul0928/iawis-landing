@@ -1,16 +1,16 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AnimatePresence, motion } from "framer-motion";
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useNewsletterSubscription } from "@/hooks/use-newsletter";
 import { type NewsletterData, newsletterSchema } from "@/lib/validations";
-import { SuccessState } from "./SuccessState";
 import { ErrorState } from "./ErrorState";
+import { SuccessState } from "./SuccessState";
 import type { SubmissionState, WaitlistFormProps } from "./types";
 
 /**
@@ -55,18 +55,21 @@ export function WaitlistForm({ className }: WaitlistFormProps) {
   };
 
   return (
-    <div className={`w-full max-w-[320px] sm:max-w-[450px] ${className}`}>
+    <div className={`flex justify-center ${className}`}>
       <motion.div
         animate={{
-          width: isExpanded || submissionState !== "input" ? "100%" : "auto",
-          height: isExpanded || submissionState !== "input" ? "auto" : "auto",
+          width: isExpanded || submissionState !== "input" ? "400px" : "auto",
+        }}
+        style={{
+          minWidth:
+            isExpanded || submissionState !== "input" ? "400px" : "auto",
         }}
         transition={{
           type: "spring",
           bounce: 0.3,
           duration: 0.5,
         }}
-        className="bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full shadow-lg flex items-center overflow-hidden min-h-[56px] sm:min-h-[72px]"
+        className="bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full shadow-lg flex items-center overflow-hidden h-[56px] sm:h-[72px]"
       >
         <AnimatePresence mode="wait">
           {!isExpanded && submissionState === "input" ? (
@@ -79,8 +82,7 @@ export function WaitlistForm({ className }: WaitlistFormProps) {
             >
               <Button
                 onClick={() => setIsExpanded(true)}
-                size="lg"
-                className="bg-transparent border-none text-white hover:bg-white/10 transition-all duration-300 rounded-full px-6 py-4 sm:px-12 sm:py-8 text-lg sm:text-xl font-semibold shadow-none hover:scale-105 active:scale-95"
+                className="bg-transparent border-none text-white hover:bg-white/10 transition-all duration-300 rounded-full px-8 py-4 sm:px-12 sm:py-6 text-lg sm:text-xl font-semibold shadow-none hover:scale-105 active:scale-95 h-full w-full"
               >
                 Join the Waitlist
               </Button>
@@ -92,42 +94,43 @@ export function WaitlistForm({ className }: WaitlistFormProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0, duration: 0.3 }}
-              className="flex items-center w-full pl-3 pr-2 py-2 sm:pl-4"
+              className="flex items-center w-full px-3 py-2 sm:px-4 sm:py-3"
             >
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.1, duration: 0.3 }}
-                className="flex-1"
+                className="flex-1 mr-3"
               >
                 <Input
                   {...form.register("email")}
                   type="email"
                   placeholder="Enter your email"
-                  className="bg-transparent border-none text-white placeholder:text-white/60 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-transparent text-lg sm:text-xl px-3 py-4 sm:px-6 sm:py-8 w-full"
+                  className="bg-transparent border-none text-white placeholder:text-white/60 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-transparent text-lg sm:text-xl px-4 py-4 sm:px-6 sm:py-6 w-full h-full"
                   autoFocus
                 />
               </motion.div>
               <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
                 transition={{
                   delay: 0.2,
                   duration: 0.3,
-                  type: "spring",
-                  bounce: 0.4,
                 }}
+                className="flex-shrink-0"
               >
                 <Button
                   type="submit"
-                  size="sm"
                   disabled={submissionState === "loading"}
-                  className="bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white/30 transition-all duration-300 rounded-full w-12 h-12 sm:w-16 sm:h-16 p-0 shadow-lg hover:shadow-xl flex items-center justify-center"
+                  className="bg-transparent border-none text-white hover:bg-white/10 transition-all duration-300 rounded-full px-6 py-4 sm:px-8 sm:py-6 text-lg sm:text-xl font-semibold shadow-none hover:scale-105 active:scale-95 whitespace-nowrap h-full"
                 >
                   {submissionState === "loading" ? (
-                    <Loader2 className="w-6 h-6 sm:w-8 sm:h-8 animate-spin" />
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                      <span className="hidden sm:inline">Joining...</span>
+                    </div>
                   ) : (
-                    <ArrowRight className="w-7 h-7 sm:w-10 sm:h-10" />
+                    "Join the Waitlist"
                   )}
                 </Button>
               </motion.div>
