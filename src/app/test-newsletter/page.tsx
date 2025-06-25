@@ -9,12 +9,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { NewsletterForm } from "@/components/forms/newsletter-form";
 import { createClient } from "@/lib/supabase/client";
 
-function ConnectionStatus({ 
-  status, 
-  errorMessage 
-}: { 
-  status: "checking" | "connected" | "error"; 
-  errorMessage: string; 
+function ConnectionStatus({
+  status,
+  errorMessage,
+}: {
+  status: "checking" | "connected" | "error";
+  errorMessage: string;
 }) {
   switch (status) {
     case "checking":
@@ -38,23 +38,23 @@ function ConnectionStatus({
             <XCircleIcon className="size-5" />
             <span>❌ Connection failed</span>
           </div>
-          <p className="text-sm text-red-500 ml-7">
-            {errorMessage}
-          </p>
+          <p className="text-sm text-red-500 ml-7">{errorMessage}</p>
         </div>
       );
   }
 }
 
 export default function TestNewsletterPage() {
-  const [connectionStatus, setConnectionStatus] = useState<"checking" | "connected" | "error">("checking");
+  const [connectionStatus, setConnectionStatus] = useState<
+    "checking" | "connected" | "error"
+  >("checking");
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   useEffect(() => {
     async function testConnection() {
       try {
         const supabase = createClient();
-        
+
         // Simple test query to check connection
         const { error } = await supabase
           .from("newsletter_subscribers")
@@ -67,7 +67,9 @@ export default function TestNewsletterPage() {
         setConnectionStatus("connected");
       } catch (error) {
         setConnectionStatus("error");
-        setErrorMessage(error instanceof Error ? error.message : "Unknown error");
+        setErrorMessage(
+          error instanceof Error ? error.message : "Unknown error",
+        );
       }
     }
 
@@ -94,7 +96,10 @@ export default function TestNewsletterPage() {
             <CardTitle>Database Connection</CardTitle>
           </CardHeader>
           <CardContent>
-            <ConnectionStatus status={connectionStatus} errorMessage={errorMessage} />
+            <ConnectionStatus
+              status={connectionStatus}
+              errorMessage={errorMessage}
+            />
           </CardContent>
         </Card>
 
@@ -123,26 +128,28 @@ export default function TestNewsletterPage() {
                 Make sure the "Database Connection" shows as connected above.
               </p>
             </div>
-            
+
             <div className="space-y-2">
               <h4 className="font-medium">2. Test Newsletter Signup</h4>
               <p className="text-sm text-muted-foreground">
-                Enter a test email and click subscribe. You should see a success message.
+                Enter a test email and click subscribe. You should see a success
+                message.
               </p>
             </div>
-            
+
             <div className="space-y-2">
               <h4 className="font-medium">3. Verify in Supabase</h4>
               <p className="text-sm text-muted-foreground">
-                Go to your Supabase dashboard → Table Editor → newsletter_subscribers 
-                and check if your test email appears.
+                Go to your Supabase dashboard → Table Editor →
+                newsletter_subscribers and check if your test email appears.
               </p>
             </div>
-            
+
             <div className="space-y-2">
               <h4 className="font-medium">4. Test Error Handling</h4>
               <p className="text-sm text-muted-foreground">
-                Try subscribing with the same email twice to test duplicate email handling.
+                Try subscribing with the same email twice to test duplicate
+                email handling.
               </p>
             </div>
           </CardContent>
@@ -155,9 +162,19 @@ export default function TestNewsletterPage() {
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="text-sm space-y-1">
-              <p><strong>Environment:</strong> {process.env.NODE_ENV}</p>
-              <p><strong>Supabase URL:</strong> {process.env.NEXT_PUBLIC_SUPABASE_URL ? "✅ Set" : "❌ Missing"}</p>
-              <p><strong>Supabase Key:</strong> {process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? "✅ Set" : "❌ Missing"}</p>
+              <p>
+                <strong>Environment:</strong> {process.env.NODE_ENV}
+              </p>
+              <p>
+                <strong>Supabase URL:</strong>{" "}
+                {process.env.NEXT_PUBLIC_SUPABASE_URL ? "✅ Set" : "❌ Missing"}
+              </p>
+              <p>
+                <strong>Supabase Key:</strong>{" "}
+                {process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+                  ? "✅ Set"
+                  : "❌ Missing"}
+              </p>
             </div>
           </CardContent>
         </Card>
