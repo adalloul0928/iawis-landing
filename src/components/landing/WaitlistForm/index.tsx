@@ -107,7 +107,7 @@ export function WaitlistForm({ className }: WaitlistFormProps) {
                     {...form.register("email")}
                     type="email"
                     placeholder="Enter your email"
-                    className="bg-transparent border-none text-white placeholder:text-white/60 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-transparent text-lg sm:text-xl font-normal px-4 py-0 w-full h-full"
+                    className="bg-transparent border-none text-white placeholder:text-white/60 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-transparent text-lg sm:text-3xl font-normal px-4 py-0 w-full h-full"
                     autoFocus={isExpanded}
                   />
                 )}
