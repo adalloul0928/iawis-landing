@@ -34,7 +34,7 @@ export default function Home() {
       <Logo className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
 
       {/* Expandable Waitlist Input - Bottom Center */}
-      <WaitlistForm className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-4 sm:bottom-8" />
+      <WaitlistForm className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-4 sm:bottom-8 pb-safe" />
     </div>
   );
 }
