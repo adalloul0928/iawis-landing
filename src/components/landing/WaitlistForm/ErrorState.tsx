@@ -38,7 +38,7 @@ export function ErrorState({ errorMessage, onReset }: ErrorStateProps) {
             transition={{ delay: 0.3 }}
             className="text-white font-medium text-sm sm:text-base"
           >
-            Oops, something went wrong
+            Something went wrong
           </motion.h3>
           <motion.p
             initial={{ opacity: 0, y: 10 }}

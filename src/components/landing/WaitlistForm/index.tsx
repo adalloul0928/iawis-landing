@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,17 +23,21 @@ export function WaitlistForm({ className }: WaitlistFormProps) {
   const [submissionState, setSubmissionState] =
     useState<SubmissionState>("input");
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
+  const wasExpandedRef = useRef(false);
 
   const form = useForm<NewsletterData>({
     resolver: zodResolver(newsletterSchema),
     defaultValues: {
       email: "",
     },
+    mode: "onSubmit",
   });
 
   const subscription = useNewsletterSubscription();
 
   const handleSubmit = (values: NewsletterData) => {
+    setHasAttemptedSubmit(true);
     setSubmissionState("loading");
     subscription.mutate(values.email, {
       onSuccess: () => {
@@ -48,14 +52,26 @@ export function WaitlistForm({ className }: WaitlistFormProps) {
     });
   };
 
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Only process submission if the form was already expanded before this event
+    // This prevents submission when the button click is just expanding the form
+    if (wasExpandedRef.current) {
+      setHasAttemptedSubmit(true);
+      form.handleSubmit(handleSubmit)(e);
+    }
+  };
+
   const resetForm = () => {
     setSubmissionState("input");
     setErrorMessage("");
+    setHasAttemptedSubmit(false);
+    wasExpandedRef.current = false;
     form.reset();
   };
 
   return (
-    <div className={`flex justify-center ${className}`}>
+    <div className={`flex flex-col items-center ${className}`}>
       <span
         className="relative inline-block overflow-hidden rounded-full p-[1px]"
         style={{
@@ -87,8 +103,9 @@ export function WaitlistForm({ className }: WaitlistFormProps) {
           ) : (
             <motion.form
               layout
-              onSubmit={form.handleSubmit(handleSubmit)}
+              onSubmit={handleFormSubmit}
               className="flex items-center w-full h-full"
+              noValidate
             >
               <motion.div
                 layout
@@ -115,7 +132,16 @@ export function WaitlistForm({ className }: WaitlistFormProps) {
               <motion.div layout className="flex-shrink-0">
                 <Button
                   type={isExpanded ? "submit" : "button"}
-                  onClick={!isExpanded ? () => setIsExpanded(true) : undefined}
+                  onClick={
+                    !isExpanded
+                      ? () => {
+                          wasExpandedRef.current = false;
+                          setIsExpanded(true);
+                        }
+                      : () => {
+                          wasExpandedRef.current = true;
+                        }
+                  }
                   disabled={submissionState === "loading"}
                   className="bg-white/20 border-none text-white hover:bg-white/30 transition-all duration-300 rounded-full px-6 py-4 sm:px-8 sm:py-6 text-md sm:text-base font-medium shadow-none hover:scale-105 active:scale-95 whitespace-nowrap h-full cursor-pointer"
                 >
@@ -132,6 +158,22 @@ export function WaitlistForm({ className }: WaitlistFormProps) {
           )}
         </motion.div>
       </span>
+
+      {/* Custom validation error display */}
+      {hasAttemptedSubmit && form.formState.errors.email && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          className="mt-3 px-4 py-2 bg-white/10 backdrop-blur-md border border-red-400/30 rounded-lg text-white/90 text-sm max-w-sm text-center"
+          style={{
+            boxShadow:
+              "0 0 15px rgba(239, 68, 68, 0.2), inset 0 0 15px rgba(255,255,255,0.1)",
+          }}
+        >
+          {form.formState.errors.email.message}
+        </motion.div>
+      )}
     </div>
   );
 }
