@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/landing/Logo";
 import { SocialIcons } from "@/components/landing/SocialIcons";
 import { WaitlistForm } from "@/components/landing/WaitlistForm";
@@ -13,37 +12,18 @@ import { WaitlistForm } from "@/components/landing/WaitlistForm";
  * - Expandable waitlist form at bottom
  */
 export default function Home() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isForward, setIsForward] = useState(true);
-
-  const handleVideoEnd = () => {
-    // Switch to the opposite video
-    setIsForward(!isForward);
-
-    // Reset and play the new video
-    const video = videoRef.current;
-    if (video) {
-      video.load();
-      video.play();
-    }
-  };
-
   return (
     <div className="relative h-screen overflow-hidden">
       {/* Background Video */}
       <video
-        ref={videoRef}
         autoPlay
         muted
+        loop
         playsInline
         preload="auto"
-        onEnded={handleVideoEnd}
         className="absolute inset-0 w-full h-full object-cover"
       >
-        <source
-          src={isForward ? "/short-seattle.mp4" : "/reverse-short-seattle.mp4"}
-          type="video/mp4"
-        />
+        <source src="/full-short-seattle.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
 
