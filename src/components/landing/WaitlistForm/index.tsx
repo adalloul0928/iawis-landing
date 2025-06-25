@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -65,81 +65,66 @@ export function WaitlistForm({ className }: WaitlistFormProps) {
           style={{
             minWidth:
               isExpanded || submissionState !== "input" ? "400px" : "auto",
+            transformOrigin: "right",
           }}
           transition={{
             type: "spring",
             bounce: 0.1,
-            duration: 0.8,
+            duration: 0.5,
           }}
           className="relative bg-white/10 backdrop-blur-md text-white rounded-full shadow-lg flex items-center overflow-hidden h-[56px] sm:h-[72px]"
         >
-          <AnimatePresence mode="wait">
-            {!isExpanded && submissionState === "input" ? (
+          {submissionState === "success" ? (
+            <SuccessState />
+          ) : submissionState === "error" ? (
+            <ErrorState errorMessage={errorMessage} onReset={resetForm} />
+          ) : (
+            <motion.form
+              layout
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="flex items-center w-full h-full"
+            >
               <motion.div
-                key="button"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
+                layout
+                animate={{
+                  width: isExpanded ? "240px" : "0px",
+                }}
+                transition={{
+                  type: "spring",
+                  bounce: 0.1,
+                  duration: 0.5,
+                }}
+                className="overflow-hidden"
               >
-                <Button
-                  onClick={() => setIsExpanded(true)}
-                  className="bg-transparent border-none text-white hover:bg-white/10 transition-all duration-300 rounded-full px-8 py-4 sm:px-12 sm:py-6 text-lg sm:text-xl font-semibold shadow-none hover:scale-105 active:scale-95 h-full w-full"
-                >
-                  Join the Waitlist
-                </Button>
-              </motion.div>
-            ) : submissionState === "input" || submissionState === "loading" ? (
-              <motion.form
-                key="form"
-                onSubmit={form.handleSubmit(handleSubmit)}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
-                className="flex items-center w-full pl-4 pr-0 py-2 sm:pl-6 sm:pr-0 sm:py-3"
-              >
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.1, duration: 0.3 }}
-                  className="flex-1"
-                >
+                {isExpanded && (
                   <Input
                     {...form.register("email")}
                     type="email"
                     placeholder="Enter your email"
-                    className="bg-transparent border-none text-white placeholder:text-white/60 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-transparent text-lg sm:text-xl px-2 py-4 sm:px-3 sm:py-6 w-full h-full"
-                    autoFocus
+                    className="bg-transparent border-none text-white placeholder:text-white/60 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-transparent text-lg sm:text-xl px-4 py-0 w-full h-full"
+                    autoFocus={isExpanded}
                   />
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.1, duration: 0.3 }}
-                  className="flex-shrink-0"
+                )}
+              </motion.div>
+              <motion.div layout className="flex-shrink-0">
+                <Button
+                  type={isExpanded ? "submit" : "button"}
+                  onClick={!isExpanded ? () => setIsExpanded(true) : undefined}
+                  disabled={submissionState === "loading"}
+                  className="bg-white/20 border-none text-white hover:bg-white/30 transition-all duration-300 rounded-full px-6 py-4 sm:px-8 sm:py-6 text-sm sm:text-base font-normal shadow-none hover:scale-105 active:scale-95 whitespace-nowrap h-full"
                 >
-                  <Button
-                    type="submit"
-                    disabled={submissionState === "loading"}
-                    className="bg-white/20 border-none text-white hover:bg-white/30 transition-all duration-300 rounded-full pl-4 pr-4 py-4 sm:pl-5 sm:pr-5 sm:py-6 text-sm sm:text-base font-normal shadow-none hover:scale-105 active:scale-95 whitespace-nowrap h-full"
-                  >
-                    {submissionState === "loading" ? (
-                      <div className="flex items-center gap-2">
-                        <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
-                        <span className="hidden sm:inline">Joining...</span>
-                      </div>
-                    ) : (
-                      "Join the Waitlist"
-                    )}
-                  </Button>
-                </motion.div>
-              </motion.form>
-            ) : submissionState === "success" ? (
-              <SuccessState />
-            ) : submissionState === "error" ? (
-              <ErrorState errorMessage={errorMessage} onReset={resetForm} />
-            ) : null}
-          </AnimatePresence>
+                  {submissionState === "loading" ? (
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                      <span className="hidden sm:inline">Joining...</span>
+                    </div>
+                  ) : (
+                    "Join the Waitlist"
+                  )}
+                </Button>
+              </motion.div>
+            </motion.form>
+          )}
         </motion.div>
       </span>
     </div>
