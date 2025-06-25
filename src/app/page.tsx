@@ -16,9 +16,9 @@ export default function Home() {
     <div
       className="relative overflow-hidden"
       style={{
-        height: "100dvh",
-        // Fallback for older browsers
-        minHeight: "100vh",
+        height: "100svh",
+        // Fallback for older browsers that don't support svh
+        minHeight: "100dvh",
       }}
     >
       {/* Background Video */}
@@ -41,7 +41,7 @@ export default function Home() {
       <Logo className="absolute top-[45%] left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
 
       {/* Expandable Waitlist Input - Bottom Center */}
-      <WaitlistForm className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-4 sm:bottom-8 pb-safe" />
+      <WaitlistForm className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-4 sm:bottom-8 pb-safe-enhanced" />
     </div>
   );
 }
