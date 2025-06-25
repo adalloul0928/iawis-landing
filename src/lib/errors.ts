@@ -20,7 +20,7 @@ export function handleSupabaseError(error: unknown): never {
   switch (errorObj.code) {
     case "23505": // Unique constraint violation
       throw new NewsletterError(
-        "This email is already subscribed to our newsletter.",
+        "This email is already subscribed.",
         "DUPLICATE_EMAIL",
         error,
       );
@@ -70,7 +70,7 @@ export function getErrorMessage(error: unknown): string {
     return error;
   }
 
-  return "An unexpected error occurred. Please try again.";
+  return "An error occurred. Please try again.";
 }
 
 export function isNetworkError(error: unknown): boolean {
@@ -87,21 +87,21 @@ export function isNetworkError(error: unknown): boolean {
 
 export function getRetryMessage(error: unknown): string {
   if (isNetworkError(error)) {
-    return "Connection issue detected. Please check your internet connection and try again.";
+    return "An error occurred. Please try again.";
   }
 
   if (error instanceof NewsletterError) {
     switch (error.code) {
       case "DUPLICATE_EMAIL":
-        return "You're already subscribed! Check your email for confirmation.";
+        return "You're already subscribed!";
       case "NOT_FOUND":
         return "This link may have expired. Please try subscribing again.";
       case "ACCESS_DENIED":
-        return "Permission error. Please contact our support team.";
+        return "An error occurred. Please try again.";
       default:
-        return "Please try again or contact support if the issue persists.";
+        return "An error occurred. Please try again.";
     }
   }
 
-  return "Please try again. If the problem continues, contact our support team.";
+  return "Please try again.";
 }
