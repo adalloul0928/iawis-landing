@@ -4,9 +4,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowRight, Check, X, Loader2 } from "lucide-react";
+import { ArrowRight, Check, X, Loader2, Twitter, Instagram } from "lucide-react";
 import { useNewsletterSubscription } from "@/hooks/use-newsletter";
 import { type NewsletterData, newsletterSchema } from "@/lib/validations";
 
@@ -25,6 +26,17 @@ export default function Home() {
   });
 
   const subscription = useNewsletterSubscription();
+
+  // Custom TikTok Icon Component
+  const TikTokIcon = ({ className }: { className?: string }) => (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+    >
+      <path d="M19.321 5.562a5.122 5.122 0 0 1-.443-.258 6.228 6.228 0 0 1-1.137-.966c-.849-.944-1.316-2.17-1.316-3.456 0-.085-.003-.17-.009-.254h3.3v3.934zM9.372 18.385c-1.813 0-3.291-1.478-3.291-3.291s1.478-3.291 3.291-3.291 3.291 1.478 3.291 3.291-1.478 3.291-3.291 3.291zm7.943-8.82v2.616c-1.18 0-2.315-.377-3.252-1.08v5.087c0 2.617-2.122 4.74-4.74 4.74s-4.74-2.123-4.74-4.74 2.123-4.74 4.74-4.74c.308 0 .607.03.893.087v2.713a2.042 2.042 0 0 0-.893-.202c-1.188 0-2.154.966-2.154 2.154s.966 2.154 2.154 2.154 2.154-.966 2.154-2.154V.388h2.586c.202 1.725.995 3.278 2.252 4.39z"/>
+    </svg>
+  );
 
   const handleSubmit = (values: NewsletterData) => {
     setSubmissionState('loading');
@@ -145,6 +157,73 @@ export default function Home() {
         <source src="/seattle.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
+      
+      {/* Social Media Icons - Top Right */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.5, ease: "easeOut" }}
+        className="absolute top-6 right-6 flex gap-4"
+      >
+        {[
+          { 
+            icon: Twitter, 
+            href: "https://twitter.com/alwayswetseattle",
+            label: "Twitter"
+          },
+          { 
+            icon: Instagram, 
+            href: "https://instagram.com/alwayswetseattle",
+            label: "Instagram"
+          },
+          { 
+            icon: TikTokIcon, 
+            href: "https://tiktok.com/@alwayswetseattle",
+            label: "TikTok"
+          }
+        ].map((social, index) => (
+          <motion.a
+            key={social.label}
+            href={social.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ 
+              duration: 0.4, 
+              delay: 0.7 + index * 0.1,
+              type: "spring",
+              bounce: 0.4
+            }}
+            whileHover={{ 
+              scale: 1.1,
+              backgroundColor: "rgba(255, 255, 255, 0.1)"
+            }}
+            whileTap={{ scale: 0.95 }}
+            className="w-12 h-12 rounded-full border border-white/20 bg-white/5 backdrop-blur-md flex items-center justify-center text-white/80 hover:text-white transition-all duration-300 hover:shadow-lg"
+            aria-label={social.label}
+          >
+            <social.icon className="w-5 h-5" />
+          </motion.a>
+        ))}
+      </motion.div>
+      
+      {/* Centered Logo */}
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8, type: "spring", bounce: 0.3 }}
+        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+      >
+        <Image
+          src="/alwayswet.png"
+          alt="It's Always Wet In Seattle"
+          width={400}
+          height={400}
+          className="drop-shadow-2xl"
+          priority
+        />
+      </motion.div>
       
       {/* Expandable Waitlist Input */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
