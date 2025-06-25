@@ -13,7 +13,14 @@ import { WaitlistForm } from "@/components/landing/WaitlistForm";
  */
 export default function Home() {
   return (
-    <div className="relative h-screen overflow-hidden">
+    <div
+      className="relative overflow-hidden"
+      style={{
+        height: "100dvh",
+        // Fallback for older browsers
+        minHeight: "100vh",
+      }}
+    >
       {/* Background Video */}
       <video
         autoPlay
@@ -31,10 +38,10 @@ export default function Home() {
       <SocialIcons className="absolute top-4 right-4 sm:top-6 sm:right-6" />
 
       {/* Centered Logo */}
-      <Logo className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+      <Logo className="absolute top-[45%] left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
 
       {/* Expandable Waitlist Input - Bottom Center */}
-      <WaitlistForm className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-4 sm:bottom-8 pb-safe" />
+      <WaitlistForm className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-4 sm:bottom-8 pb-safe" />
     </div>
   );
 }
