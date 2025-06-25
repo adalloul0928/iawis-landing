@@ -101,7 +101,7 @@ export function WaitlistForm({ className }: WaitlistFormProps) {
                     {...form.register("email")}
                     type="email"
                     placeholder="Enter your email"
-                    className="bg-transparent border-none text-white placeholder:text-white/60 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-transparent text-lg sm:text-xl px-4 py-0 w-full h-full"
+                    className="bg-transparent border-none text-white placeholder:text-white/60 focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-transparent text-xl sm:text-xl font-normal px-4 py-0 w-full h-full"
                     autoFocus={isExpanded}
                   />
                 )}
@@ -111,16 +111,15 @@ export function WaitlistForm({ className }: WaitlistFormProps) {
                   type={isExpanded ? "submit" : "button"}
                   onClick={!isExpanded ? () => setIsExpanded(true) : undefined}
                   disabled={submissionState === "loading"}
-                  className="bg-white/20 border-none text-white hover:bg-white/30 transition-all duration-300 rounded-full px-6 py-4 sm:px-8 sm:py-6 text-sm sm:text-base font-normal shadow-none hover:scale-105 active:scale-95 whitespace-nowrap h-full"
+                  className="bg-white/20 border-none text-white hover:bg-white/30 transition-all duration-300 rounded-full px-6 py-4 sm:px-8 sm:py-6 text-md sm:text-base font-medium shadow-none hover:scale-105 active:scale-95 whitespace-nowrap h-full cursor-pointer"
                 >
-                  {submissionState === "loading" ? (
-                    <div className="flex items-center gap-2">
-                      <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
-                      <span className="hidden sm:inline">Joining...</span>
-                    </div>
-                  ) : (
-                    "Join the Waitlist"
-                  )}
+                  <div className="flex items-center justify-center min-w-[120px]">
+                    {submissionState === "loading" ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      "Join the Waitlist"
+                    )}
+                  </div>
                 </Button>
               </motion.div>
             </motion.form>
