@@ -21,11 +21,11 @@ export function Logo({ className }: LogoProps) {
       className={`max-w-[90vw] ${className}`}
     >
       <Image
-        src="/alwayswet.png"
+        src="/always-wet-logo.svg"
         alt="It's Always Wet In Seattle"
-        width={400}
-        height={400}
-        className="w-60 h-60 sm:w-80 sm:h-80 lg:w-96 lg:h-96 drop-shadow-2xl"
+        width={500}
+        height={500}
+        className="w-80 h-80 sm:w-96 sm:h-96 lg:w-[28rem] lg:h-[28rem] drop-shadow-2xl"
         priority
       />
     </motion.div>

@@ -61,15 +61,16 @@ export function SocialIcons({ className }: SocialIconsProps) {
             type: "spring",
             bounce: 0.4,
           }}
-          whileHover={{
-            scale: 1.1,
-            backgroundColor: "rgba(255, 255, 255, 0.1)",
-          }}
+          whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
-          className="w-12 h-12 rounded-full border border-white/20 bg-white/5 backdrop-blur-md flex items-center justify-center text-white/80 hover:text-white transition-all duration-300 hover:shadow-lg"
+          className="w-16 h-16 rounded-full border border-white/20 bg-white/10 backdrop-blur-md flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-all duration-300"
+          style={{
+            boxShadow:
+              "0 0 20px rgba(255,255,255,0.3), inset 0 0 20px rgba(255,255,255,0.1)",
+          }}
           aria-label={social.label}
         >
-          <social.icon className="w-5 h-5" />
+          <social.icon className="w-6 h-6" />
         </motion.a>
       ))}
     </motion.div>
