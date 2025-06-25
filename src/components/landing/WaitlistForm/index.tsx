@@ -56,8 +56,14 @@ export function WaitlistForm({ className }: WaitlistFormProps) {
 
   return (
     <div className={`flex justify-center ${className}`}>
-      <span className="relative inline-block overflow-hidden rounded-full p-[1px]">
-        <span className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,rgba(255,255,255,0.4)_0deg,rgba(255,255,255,0.4)_15deg,transparent_16deg,transparent_344deg,rgba(255,255,255,0.4)_345deg)]" />
+      <span
+        className="relative inline-block overflow-hidden rounded-full p-[1px]"
+        style={{
+          boxShadow:
+            "0 0 20px rgba(255,255,255,0.3), inset 0 0 20px rgba(255,255,255,0.1)",
+        }}
+      >
+        <span className="absolute inset-[-1000%] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,rgba(255,255,255,0.4)_0deg,rgba(255,255,255,0.4)_15deg,transparent_16deg,transparent_344deg,rgba(255,255,255,0.4)_345deg)]" />
         <motion.div
           animate={{
             width: isExpanded || submissionState !== "input" ? "400px" : "auto",
