@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import type React from "react";
+import { TestButton } from "@/components/ui/TestButton";
 
 const InstagramIcon = ({ className }: { className?: string }) => (
   <svg
@@ -36,39 +37,21 @@ interface SocialIconsProps {
 
 /**
  * Social media icons component with glass morphism styling
- * Features staggered entrance animations and hover effects
+ * Static display with no entrance animations
  * Responsive design with mobile-optimized spacing
  */
 export function SocialIcons({ className }: SocialIconsProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.5, ease: "easeOut" }}
-      className={`flex gap-2 sm:gap-4 ${className}`}
-    >
+    <div className={`flex gap-2 sm:gap-4 ${className}`}>
       {socialLinks.map((social, index) => (
-        <motion.a
-          key={social.label}
-          href={social.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{
-            duration: 0.4,
-            delay: 0.7 + index * 0.1,
-            type: "spring",
-            bounce: 0.4,
-          }}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-          className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white/80 hover:text-white hover:bg-white/20 transition-all duration-300"
-          aria-label={social.label}
-        >
-          <social.icon className="w-6 h-6" />
-        </motion.a>
+        <div key={social.label}>
+          <TestButton 
+            href={social.href}
+          >
+            <social.icon className="w-6 h-6" />
+          </TestButton>
+        </div>
       ))}
-    </motion.div>
+    </div>
   );
 }

@@ -25,7 +25,7 @@ export function Logo({ className }: LogoProps) {
         alt="It's Always Wet In Seattle"
         width={500}
         height={500}
-        className="w-80 h-80 sm:w-96 sm:h-96 lg:w-[28rem] lg:h-[28rem] drop-shadow-2xl"
+        className="w-80 h-80 sm:w-96 sm:h-96 lg:w-80 lg:h-80 drop-shadow-2xl"
         priority
       />
     </motion.div>

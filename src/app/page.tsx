@@ -40,8 +40,9 @@ export default function Home() {
       {/* Centered Logo */}
       <Logo className="absolute top-[45%] left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
 
+
       {/* Expandable Waitlist Input - Bottom Center */}
-      <WaitlistForm className="absolute bottom-6 left-1/2 transform -translate-x-1/2 px-4 sm:bottom-8 pb-safe-enhanced" />
+      <WaitlistForm className="absolute bottom-12 left-1/2 transform -translate-x-1/2 px-4 sm:bottom-16 pb-safe-enhanced" />
     </div>
   );
 }

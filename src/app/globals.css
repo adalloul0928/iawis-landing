@@ -130,6 +130,278 @@
   }
 }
 
+/* CSS Houdini approach for smooth gradient animation */
+@property --angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0deg;
+}
+
+/* SVG stroke animation */
+@keyframes svg-stroke-grow {
+  0% {
+    stroke-dashoffset: 175.93; /* circumference */
+  }
+  50% {
+    stroke-dashoffset: 0; /* fully drawn */
+  }
+  100% {
+    stroke-dashoffset: 175.93; /* back to hidden */
+  }
+}
+
+/* Houdini gradient rotation */
+@keyframes houdini-spin {
+  from {
+    --angle: 0deg;
+  }
+  to {
+    --angle: 360deg;
+  }
+}
+
+/* Method 1: SVG Stroke-Dasharray Glowing Animation */
+@keyframes svg-glow-travel {
+  0% {
+    stroke-dashoffset: 188.5; /* small arc at start */
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
+  }
+  25% {
+    stroke-dashoffset: 94.25; /* growing */
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.7));
+  }
+  50% {
+    stroke-dashoffset: 0; /* full circle */
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.9));
+  }
+  75% {
+    stroke-dashoffset: 94.25; /* shrinking */
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.7));
+  }
+  100% {
+    stroke-dashoffset: 188.5; /* back to small arc */
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
+  }
+}
+
+/* Smooth Glow Button Animations - CSS Custom Properties */
+@property --smooth-rotation {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0deg;
+}
+
+@property --smooth-arc-size {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 30deg;
+}
+
+@property --sine-rotation {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0deg;
+}
+
+@property --sine-arc-size {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 60deg;
+}
+
+@property --bezier-rotation {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0deg;
+}
+
+@property --bezier-arc-size {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 45deg;
+}
+
+/* Variation 1: Separated Rotation and Arc Growth */
+@keyframes smooth-rotation {
+  0% { --smooth-rotation: 0deg; }
+  100% { --smooth-rotation: 360deg; }
+}
+
+@keyframes smooth-arc-pulse {
+  0% { --smooth-arc-size: 30deg; }
+  50% { --smooth-arc-size: 180deg; }
+  100% { --smooth-arc-size: 30deg; }
+}
+
+/* Variation 2: Mathematical Sine Wave Growth */
+@keyframes sine-rotation {
+  0% { --sine-rotation: 0deg; }
+  100% { --sine-rotation: 360deg; }
+}
+
+@keyframes sine-arc-growth {
+  0% { --sine-arc-size: 45deg; }
+  25% { --sine-arc-size: 120deg; }
+  50% { --sine-arc-size: 240deg; }
+  75% { --sine-arc-size: 120deg; }
+  100% { --sine-arc-size: 45deg; }
+}
+
+/* Variation 3: Ultra-Smooth Bezier Curves */
+@keyframes bezier-rotation {
+  0% { --bezier-rotation: 0deg; }
+  100% { --bezier-rotation: 360deg; }
+}
+
+@keyframes bezier-arc-breathing {
+  0% { --bezier-arc-size: 40deg; }
+  33% { --bezier-arc-size: 140deg; }
+  66% { --bezier-arc-size: 280deg; }
+  100% { --bezier-arc-size: 40deg; }
+}
+
+/* Method 3: Transform + Box-Shadow Pulse Animations */
+@keyframes pulse-glow-travel {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+}
+
+@keyframes rotate-glow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes inner-glow-pulse {
+  0% {
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.2);
+  }
+  50% {
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,0.6);
+  }
+  100% {
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.2);
+  }
+}
+
+/* Water Droplet Animations */
+@keyframes dropletFall {
+  0% {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(calc(100vh + 50px));
+    opacity: 0;
+  }
+}
+
+@keyframes dropletFallSlow {
+  0% {
+    transform: translateY(-30px) scale(0.8);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.9;
+    transform: translateY(0) scale(1);
+  }
+  85% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(calc(100vh + 60px)) scale(0.6);
+    opacity: 0;
+  }
+}
+
+@keyframes svgDropletPath {
+  0% {
+    transform: translateY(-40px);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(calc(100vh + 80px));
+    opacity: 0;
+  }
+}
+
+@keyframes motionDropletSlide {
+  0% {
+    y: -50;
+    opacity: 0;
+    scale: 0.7;
+  }
+  25% {
+    opacity: 1;
+    scale: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    y: 'calc(100vh + 100px)';
+    opacity: 0;
+    scale: 0.8;
+  }
+}
+
+/* Test Button Advanced Animation */
+@property --test-rotation {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0deg;
+}
+
+@property --test-arc-size {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 15deg;
+}
+
+@keyframes test-button-rotation {
+  0% { --test-rotation: 0deg; }
+  100% { --test-rotation: 360deg; }
+}
+
+@keyframes test-button-pulse {
+  0% { --test-arc-size: 15deg; }
+  10% { --test-arc-size: 25deg; }
+  20% { --test-arc-size: 40deg; }
+  30% { --test-arc-size: 60deg; }
+  40% { --test-arc-size: 80deg; }
+  50% { --test-arc-size: 90deg; }
+  60% { --test-arc-size: 80deg; }
+  70% { --test-arc-size: 60deg; }
+  80% { --test-arc-size: 40deg; }
+  90% { --test-arc-size: 25deg; }
+  100% { --test-arc-size: 15deg; }
+}
+
 @layer utilities {
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom);
