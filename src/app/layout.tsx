@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { QueryProvider } from "@/providers/query-provider";
@@ -16,12 +16,17 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "IAWIS",
   description: "Its Always Wet in Seattle",
-  viewport: "width=device-width, initial-scale=1.0, viewport-fit=cover",
-  themeColor: "#000000",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1.0,
+  viewportFit: "cover",
+  themeColor: "#000000",
 };
 
 export default function RootLayout({
