@@ -1,11 +1,4 @@
 import React, { useState, useEffect } from "react";
-import {
-  FaCampground,
-  FaFire,
-  FaTint,
-  FaHotTub,
-  FaHiking,
-} from "react-icons/fa";
 
 const InteractiveSelector = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -13,39 +6,29 @@ const InteractiveSelector = () => {
 
   const options = [
     {
-      title: "Luxury Tent",
-      description: "Cozy glamping under the stars",
-      image:
-        "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
-      icon: <FaCampground size={24} className="text-white" />,
+      title: "Oversized Hoodie",
+      description: "Premium cotton blend comfort",
+      image: "/product-images/image1.jpeg",
     },
     {
-      title: "Campfire Feast",
-      description: "Gourmet s'mores & stories",
-      image:
-        "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=800&q=80",
-      icon: <FaFire size={24} className="text-white" />,
+      title: "Knit Beanie",
+      description: "Classic ribbed winter style",
+      image: "/product-images/image2.jpeg",
     },
     {
-      title: "Lakeside Retreat",
-      description: "Private dock & canoe rides",
-      image:
-        "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
-      icon: <FaTint size={24} className="text-white" />,
+      title: "Cargo Sweatpants",
+      description: "Relaxed fit with utility pockets",
+      image: "/product-images/image3.jpeg",
     },
     {
-      title: "Mountain Spa",
-      description: "Outdoor sauna & hot tub",
-      image:
-        "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=800&q=80",
-      icon: <FaHotTub size={24} className="text-white" />,
+      title: "Denim Jacket",
+      description: "Vintage-inspired distressed details",
+      image: "/product-images/image4.jpeg",
     },
     {
-      title: "Guided Adventure",
-      description: "Expert-led nature tours",
-      image:
-        "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=800&q=80",
-      icon: <FaHiking size={24} className="text-white" />,
+      title: "Graphic Tee",
+      description: "Bold artistic print design",
+      image: "/product-images/image5.jpeg",
     },
   ];
 
@@ -72,17 +55,10 @@ const InteractiveSelector = () => {
 
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen bg-[#222] font-sans text-white">
-      {/* Header Section */}
-      <div className="w-full max-w-2xl px-6 mt-8 mb-2 text-center">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-3 tracking-tight drop-shadow-lg animate-fadeInTop delay-300">
-          Always Wet
-        </h1>
-      </div>
-
       <div className="h-12"></div>
 
       {/* Options Container */}
-      <div className="options flex w-full max-w-[1400px] min-w-[900px] h-[650px] mx-0 items-stretch overflow-hidden relative">
+      <div className="options flex flex-col sm:flex-row w-full max-w-[1800px] sm:min-w-[800px] h-[600px] sm:h-[800px] mx-0 items-stretch overflow-hidden relative p-2 sm:p-10">
         {options.map((option, index) => (
           <div
             key={index}
@@ -99,8 +75,8 @@ const InteractiveSelector = () => {
               transform: animatedOptions.includes(index)
                 ? "translateX(0)"
                 : "translateX(-60px)",
-              minWidth: "60px",
-              minHeight: "100px",
+              minWidth: window.innerWidth < 640 ? "40px" : "60px",
+              minHeight: window.innerWidth < 640 ? "80px" : "100px",
               margin: 0,
               borderRadius: 0,
               borderWidth: "2px",
@@ -112,7 +88,14 @@ const InteractiveSelector = () => {
                 activeIndex === index
                   ? "0 20px 60px rgba(0,0,0,0.50)"
                   : "0 10px 30px rgba(0,0,0,0.30)",
-              flex: activeIndex === index ? "7 1 0%" : "1 1 0%",
+              flex:
+                window.innerWidth < 640
+                  ? activeIndex === index
+                    ? "3 1 0%"
+                    : "1 1 0%"
+                  : activeIndex === index
+                    ? "7 1 0%"
+                    : "1 1 0%",
               zIndex: activeIndex === index ? 10 : 1,
               display: "flex",
               flexDirection: "column",
@@ -137,14 +120,11 @@ const InteractiveSelector = () => {
               }}
             ></div>
 
-            {/* Label with icon and info */}
-            <div className="label absolute left-0 right-0 bottom-5 flex items-center justify-start h-12 z-2 pointer-events-none px-4 gap-3 w-full">
-              <div className="icon min-w-[44px] max-w-[44px] h-[44px] flex items-center justify-center rounded-full bg-[rgba(32,32,32,0.85)] backdrop-blur-[10px] shadow-[0_1px_4px_rgba(0,0,0,0.18)] border-2 border-[#444] flex-shrink-0 flex-grow-0 transition-all duration-200">
-                {option.icon}
-              </div>
+            {/* Label with info */}
+            <div className="label absolute left-0 right-0 bottom-2 sm:bottom-5 flex items-center justify-start h-8 sm:h-12 z-2 pointer-events-none px-2 sm:px-4 gap-2 sm:gap-3 w-full">
               <div className="info text-white whitespace-pre relative">
                 <div
-                  className="main font-bold text-lg transition-all duration-700 ease-in-out"
+                  className="main font-bold text-sm sm:text-lg transition-all duration-700 ease-in-out leading-tight"
                   style={{
                     opacity: activeIndex === index ? 1 : 0,
                     transform:
@@ -156,7 +136,7 @@ const InteractiveSelector = () => {
                   {option.title}
                 </div>
                 <div
-                  className="sub text-base text-gray-300 transition-all duration-700 ease-in-out"
+                  className="sub text-xs sm:text-base text-gray-300 transition-all duration-700 ease-in-out hidden sm:block"
                   style={{
                     opacity: activeIndex === index ? 1 : 0,
                     transform:

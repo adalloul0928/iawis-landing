@@ -93,7 +93,8 @@ const Carousel = memo(
     isCarouselActive: boolean;
   }) => {
     const isScreenSizeSm = useMediaQuery("(max-width: 640px)");
-    const cylinderWidth = isScreenSizeSm ? 1100 : 1800;
+    const isScreenSizeMd = useMediaQuery("(max-width: 768px)");
+    const cylinderWidth = isScreenSizeSm ? 900 : isScreenSizeMd ? 1200 : 2200;
     const faceCount = cards.length;
     const faceWidth = cylinderWidth / faceCount;
     const radius = cylinderWidth / (2 * Math.PI);
@@ -107,23 +108,25 @@ const Carousel = memo(
       <div
         className="flex h-full items-center justify-center bg-mauve-dark-2"
         style={{
-          perspective: "1000px",
+          perspective: isScreenSizeSm ? "800px" : "1000px",
           transformStyle: "preserve-3d",
           willChange: "transform",
+          touchAction: "pan-y pinch-zoom",
         }}
       >
         <motion.div
           drag={isCarouselActive ? "x" : false}
-          className="relative flex h-full origin-center cursor-grab justify-center active:cursor-grabbing"
+          className="relative flex h-full origin-center cursor-grab justify-center active:cursor-grabbing touch-pan-x"
           style={{
             transform,
             rotateY: rotation,
             width: cylinderWidth,
             transformStyle: "preserve-3d",
+            touchAction: "pan-x",
           }}
           onDrag={(_, info) =>
             isCarouselActive &&
-            rotation.set(rotation.get() + info.offset.x * 0.05)
+            rotation.set(rotation.get() + info.offset.x * (isScreenSizeSm ? 0.08 : 0.05))
           }
           onDragEnd={(_, info) =>
             isCarouselActive &&
@@ -142,12 +145,13 @@ const Carousel = memo(
           {cards.map((imgUrl, i) => (
             <motion.div
               key={`key-${imgUrl}-${i}`}
-              className="absolute flex h-full origin-center items-center justify-center rounded-xl bg-mauve-dark-2 p-2"
+              className="absolute flex h-full origin-center items-center justify-center rounded-xl bg-mauve-dark-2 p-1 sm:p-2"
               style={{
                 width: `${faceWidth}px`,
                 transform: `rotateY(${
                   i * (360 / faceCount)
                 }deg) translateZ(${radius}px)`,
+                minHeight: isScreenSizeSm ? "300px" : "400px",
               }}
               onClick={() => handleClick(imgUrl, i)}
             >
@@ -155,7 +159,11 @@ const Carousel = memo(
                 src={imgUrl}
                 alt={`keyword_${i} ${imgUrl}`}
                 layoutId={`img-${imgUrl}`}
-                className="pointer-events-none  w-full rounded-xl object-cover aspect-square"
+                className="pointer-events-none w-full rounded-xl object-cover aspect-square"
+                style={{
+                  maxWidth: isScreenSizeSm ? "200px" : "100%",
+                  maxHeight: isScreenSizeSm ? "200px" : "100%",
+                }}
                 initial={{ filter: "blur(4px)" }}
                 layout="position"
                 animate={{ filter: "blur(0px)" }}

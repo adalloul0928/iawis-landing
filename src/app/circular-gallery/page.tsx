@@ -1,10 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  CircularGallery,
-  GalleryItem,
-} from "@/components/ui/circular-gallery-ravi";
+import { CircularGallery, GalleryItem } from "@/components/ui/circular-gallery";
 import { AnimalModal } from "@/components/ui/animal-modal";
 
 const galleryData: GalleryItem[] = [
@@ -128,15 +125,9 @@ const CircularGalleryDemo = () => {
 
   return (
     // This outer container provides the scrollable height
-    <div
-      className="w-full bg-black text-white"
-      style={{ height: "500vh" }}
-    >
+    <div className="w-full bg-black text-white" style={{ height: "500vh" }}>
       {/* This inner container sticks to the top while scrolling */}
       <div className="w-full h-screen sticky top-0 flex flex-col items-center justify-center overflow-hidden">
-        <div className="text-center mb-8 absolute top-16 z-10">
-          <h1 className="text-4xl font-bold">Always Wet</h1>
-        </div>
         <div className="w-full h-full">
           <CircularGallery
             items={galleryData}

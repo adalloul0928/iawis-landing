@@ -5,12 +5,12 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { Product } from "@/types/product";
 
-interface CoverflowFramerProps {
+interface CoverflowCleanProps {
   products: Product[];
   onProductClick?: (product: Product) => void;
 }
 
-export const CoverflowFramer: React.FC<CoverflowFramerProps> = ({
+export const CoverflowClean: React.FC<CoverflowCleanProps> = ({
   products,
   onProductClick,
 }) => {
@@ -22,29 +22,38 @@ export const CoverflowFramer: React.FC<CoverflowFramerProps> = ({
   const scrollThreshold = 100;
   const dragThreshold = 100;
 
-  // Detect mobile screen size
+  // Detect screen size and set responsive values
   useEffect(() => {
-    const checkMobile = () => {
+    const updateScreenSize = () => {
       setIsMobile(window.innerWidth < 768);
     };
 
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+    updateScreenSize();
+    window.addEventListener("resize", updateScreenSize);
+    return () => window.removeEventListener("resize", updateScreenSize);
   }, []);
 
   // Calculate positions and transforms for left-to-right flow
   const getItemTransform = (index: number) => {
     let position = (index - currentIndex + products.length) % products.length;
 
-    // Responsive values based on screen size
-    const spacing = isMobile ? 200 : 520;
-    const depth = isMobile ? 100 : 180;
+    // Dynamic responsive values based on viewport size
+    const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
+    const viewportHeight = typeof window !== 'undefined' ? window.innerHeight : 768;
+    
+    // Scale factors based on viewport
+    const widthScale = Math.min(Math.max(viewportWidth / 1024, 0.5), 2);
+    const heightScale = Math.min(Math.max(viewportHeight / 768, 0.5), 2);
+    const viewportScale = Math.min(widthScale, heightScale);
+    
+    // Responsive values that scale with viewport
+    const spacing = viewportScale * (isMobile ? 180 : 400);
+    const depth = viewportScale * (isMobile ? 80 : 150);
     const rotation = isMobile ? 6 : 12;
-    const maxScale = isMobile ? 1.05 : 1.3;
-    const scaleStep = isMobile ? 0.12 : 0.2;
-    const maxBlur = isMobile ? 3 : 8;
-    const blurStep = isMobile ? 1.0 : 1.8;
+    const maxScale = Math.min(1.05 + (viewportScale - 0.5) * 0.5, isMobile ? 1.2 : 1.5);
+    const scaleStep = isMobile ? 0.12 : 0.18;
+    const maxBlur = Math.min(viewportScale * 8, isMobile ? 4 : 10);
+    const blurStep = isMobile ? 1.0 : 1.6;
 
     // Position 0 = leftmost (largest), increasing positions go right and get progressively smaller
     const baseX = position * spacing;
@@ -129,10 +138,11 @@ export const CoverflowFramer: React.FC<CoverflowFramerProps> = ({
 
       {/* Carousel Container */}
       <motion.div
-        className="relative w-full h-full flex items-center justify-start ml-8 md:ml-50 cursor-grab active:cursor-grabbing touch-pan-y"
+        className="relative w-full h-full flex items-center justify-start cursor-grab active:cursor-grabbing touch-pan-y"
         style={{ 
           perspective: isMobile ? "600px" : "1400px",
-          touchAction: "pan-y pinch-zoom"
+          touchAction: "pan-y pinch-zoom",
+          marginLeft: isMobile ? "2rem" : `${Math.min(12, (typeof window !== 'undefined' ? window.innerWidth : 1024) / 80)}rem`
         }}
         onWheel={handleWheel}
         drag="x"
@@ -147,14 +157,22 @@ export const CoverflowFramer: React.FC<CoverflowFramerProps> = ({
         {/* Items */}
         {products.map((product, index) => {
           const transform = getItemTransform(index);
+          
+          // Dynamic image sizing based on viewport
+          const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
+          const viewportHeight = typeof window !== 'undefined' ? window.innerHeight : 768;
+          const viewportScale = Math.min(Math.max(viewportWidth / 1024, 0.5), 2);
+          
+          const imageWidth = Math.round(viewportScale * (isMobile ? 250 : 500));
+          const imageHeight = Math.round(viewportScale * (isMobile ? 350 : 650));
 
           return (
             <motion.div
               key={product.id}
               className="absolute cursor-pointer"
               style={{
-                width: isMobile ? "250px" : "600px",
-                height: isMobile ? "350px" : "750px",
+                width: `${imageWidth}px`,
+                height: `${imageHeight}px`,
                 transformStyle: "preserve-3d",
                 zIndex: transform.zIndex,
               }}
@@ -179,22 +197,27 @@ export const CoverflowFramer: React.FC<CoverflowFramerProps> = ({
                 rotateY: transform.rotateY + (transform.rotateY !== 0 ? -2 : 0),
               }}
             >
-              <div className="relative w-full h-full overflow-hidden rounded-2xl shadow-2xl">
+              <div className="relative w-full h-full overflow-hidden">
                 <Image
                   src={product.image}
                   alt={product.name}
                   fill
-                  className="object-cover"
+                  className="object-cover rounded-2xl"
                 />
-                {/* Product details overlay */}
-                <div className="absolute bottom-0 left-0 w-full p-2 sm:p-6 bg-gradient-to-t from-black/90 via-black/50 to-transparent text-white">
-                  <h2 className="text-sm sm:text-2xl font-bold mb-1 leading-tight">
-                    {product.name}
-                  </h2>
-                  <p className="text-xs sm:text-sm opacity-90 leading-relaxed line-clamp-2">
-                    {product.description}
-                  </p>
-                </div>
+                
+                {/* Side Panel (only for focused item) */}
+                {currentIndex === index && (
+                  <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-white via-white/95 to-transparent flex items-center">
+                    <div className="p-2 sm:p-4 text-right">
+                      <h2 className="text-xs sm:text-base font-bold mb-1 leading-tight text-gray-900">
+                        {product.name}
+                      </h2>
+                      <p className="text-xs sm:text-sm leading-relaxed text-gray-600 line-clamp-3">
+                        {product.description}
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
             </motion.div>
           );
@@ -203,12 +226,14 @@ export const CoverflowFramer: React.FC<CoverflowFramerProps> = ({
 
       {/* Navigation Arrows */}
       <button
-        className="absolute left-2 sm:left-6 top-1/2 transform -translate-y-1/2 bg-white/95 hover:bg-white text-gray-600 hover:text-gray-900 p-3 sm:p-5 rounded-xl sm:rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 backdrop-blur-sm border border-gray-200/50 z-20"
+        type="button"
+        className="absolute left-2 sm:left-6 top-1/2 transform -translate-y-1/2 bg-white/95 hover:bg-white text-gray-600 hover:text-gray-900 p-3 sm:p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-20"
         onClick={() =>
           setCurrentIndex(
             (prev) => (prev - 1 + products.length) % products.length,
           )
         }
+        aria-label="Previous product"
       >
         <svg
           className="w-4 h-4 sm:w-6 sm:h-6"
@@ -227,12 +252,12 @@ export const CoverflowFramer: React.FC<CoverflowFramerProps> = ({
 
       <button
         type="button"
-        className="absolute right-1 sm:right-6 top-1/2 transform -translate-y-1/2 bg-white/95 hover:bg-white text-gray-600 hover:text-gray-900 p-2 sm:p-5 rounded-lg sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 backdrop-blur-sm border border-gray-200/50 z-20"
+        className="absolute right-2 sm:right-6 top-1/2 transform -translate-y-1/2 bg-white/95 hover:bg-white text-gray-600 hover:text-gray-900 p-3 sm:p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-20"
         onClick={() => setCurrentIndex((prev) => (prev + 1) % products.length)}
         aria-label="Next product"
       >
         <svg
-          className="w-3 h-3 sm:w-6 sm:h-6"
+          className="w-4 h-4 sm:w-6 sm:h-6"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -254,8 +279,8 @@ export const CoverflowFramer: React.FC<CoverflowFramerProps> = ({
             type="button"
             className={`rounded-full transition-all duration-500 ease-out ${
               index === currentIndex
-                ? "w-6 sm:w-8 h-2 sm:h-3 bg-white shadow-lg"
-                : "w-2 sm:w-3 h-2 sm:h-3 bg-white/60 hover:bg-white/80 hover:scale-110"
+                ? "w-6 sm:w-8 h-2 sm:h-3 bg-gray-700 shadow-lg"
+                : "w-2 sm:w-3 h-2 sm:h-3 bg-gray-700/60 hover:bg-gray-700/80 hover:scale-110"
             }`}
             onClick={() => setCurrentIndex(index)}
             aria-label={`Go to product ${index + 1}`}

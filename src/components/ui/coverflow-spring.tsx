@@ -173,24 +173,6 @@ export const CoverflowSpring: React.FC<CoverflowSpringProps> = ({
         })}
       </animated.div>
 
-      {/* Side navigation arrows */}
-      <button
-        className="absolute left-8 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-700 hover:text-gray-900 p-4 rounded-full shadow-lg transition-all duration-300 z-30"
-        onClick={() => setCurrentIndex((prev) => (prev - 1 + products.length) % products.length)}
-      >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
-      
-      <button
-        className="absolute right-8 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-700 hover:text-gray-900 p-4 rounded-full shadow-lg transition-all duration-300 z-30"
-        onClick={() => setCurrentIndex((prev) => (prev + 1) % products.length)}
-      >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
 
       {/* Progress indicator */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-30">

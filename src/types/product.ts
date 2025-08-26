@@ -65,5 +65,118 @@ export const products: Product[] = [
   }
 ];
 
-// Subset of products for Framer Motion coverflow (only 4 items)
-export const framerProducts: Product[] = products.slice(0, 4);
+// Fashion products for Framer Motion coverflow (only 4 items)
+export const framerProducts: Product[] = [
+  {
+    id: "1",
+    name: "Oversized Hoodie",
+    price: "$89.99",
+    image: "/product-images/image1.jpeg",
+    description: "ultra-soft oversized hoodie with premium cotton blend",
+    features: ["Premium cotton blend", "Oversized fit", "Soft interior lining", "Adjustable drawstring hood"],
+    inStock: true
+  },
+  {
+    id: "2", 
+    name: "Knit Beanie",
+    price: "$24.99",
+    image: "/product-images/image2.jpeg",
+    description: "cozy knit beanie with classic ribbed design",
+    features: ["Classic ribbed design", "Warm knit material", "One size fits all", "Multiple color options"],
+    inStock: true
+  },
+  {
+    id: "3",
+    name: "Cargo Sweatpants",
+    price: "$64.99",
+    image: "/product-images/image3.jpeg",
+    description: "relaxed fit cargo sweatpants with utility pockets",
+    features: ["Relaxed fit", "Multiple utility pockets", "Elastic waistband", "Durable fabric"],
+    inStock: true
+  },
+  {
+    id: "4",
+    name: "Denim Jacket",
+    price: "$119.99",
+    image: "/product-images/image4.jpeg", 
+    description: "vintage-inspired denim jacket with distressed details",
+    features: ["Vintage-inspired design", "Distressed details", "Classic denim construction", "Multiple pockets"],
+    inStock: false
+  }
+];
+
+// Gallery-style fashion products for card-carousel-reuno
+export const cardCarouselProducts: Product[] = [
+  {
+    id: "1",
+    name: "Oversized Hoodie",
+    price: "Premium Streetwear",
+    image: "/product-images/image1.jpeg",
+    description: "ultra-soft oversized hoodie with premium cotton blend",
+    features: ["Premium cotton blend", "Oversized fit", "Soft interior lining", "Adjustable drawstring hood"],
+    inStock: true
+  },
+  {
+    id: "2",
+    name: "Knit Beanie",
+    price: "Winter Accessories",
+    image: "/product-images/image2.jpeg",
+    description: "cozy knit beanie with classic ribbed design",
+    features: ["Classic ribbed design", "Warm knit material", "One size fits all", "Multiple color options"],
+    inStock: true
+  },
+  {
+    id: "3",
+    name: "Cargo Sweatpants",
+    price: "Comfort Wear",
+    image: "/product-images/image3.jpeg",
+    description: "relaxed fit cargo sweatpants with utility pockets",
+    features: ["Relaxed fit", "Multiple utility pockets", "Elastic waistband", "Durable fabric"],
+    inStock: true
+  },
+  {
+    id: "4",
+    name: "Denim Jacket",
+    price: "Classic Outerwear",
+    image: "/product-images/image4.jpeg",
+    description: "vintage-inspired denim jacket with distressed details",
+    features: ["Vintage-inspired design", "Distressed details", "Classic denim construction", "Multiple pockets"],
+    inStock: false
+  },
+  {
+    id: "5",
+    name: "Graphic Tee",
+    price: "Statement Wear",
+    image: "/product-images/image5.jpeg",
+    description: "bold graphic t-shirt with artistic print design",
+    features: ["Bold graphic design", "Soft cotton fabric", "Regular fit", "Screen printed graphics"],
+    inStock: true
+  },
+  {
+    id: "6",
+    name: "Track Pants",
+    price: "Athletic Wear",
+    image: "/product-images/image6.jpeg",
+    description: "performance track pants with moisture-wicking fabric",
+    features: ["Moisture-wicking fabric", "Elastic waistband", "Tapered fit", "Side pockets"],
+    inStock: true
+  },
+  {
+    id: "7",
+    name: "Bucket Hat",
+    price: "Summer Accessories",
+    image: "/product-images/image1.jpeg",
+    description: "trendy bucket hat with UV protection",
+    features: ["UV protection", "Lightweight fabric", "Adjustable fit", "Trendy design"],
+    inStock: true
+  },
+  {
+    id: "8",
+    name: "Bomber Jacket",
+    price: "Urban Outerwear",
+    image: "/product-images/image2.jpeg",
+    description: "sleek bomber jacket with premium satin finish",
+    features: ["Premium satin finish", "Ribbed cuffs and hem", "Front zip closure", "Multiple pockets"],
+    inStock: true
+  }
+];
