@@ -30,17 +30,29 @@ interface CircularGalleryProps extends HTMLAttributes<HTMLDivElement> {
 
 const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
   (
-    { items, className, radius = 600, autoRotateSpeed = 0.02, onItemClick, ...props },
+    {
+      items,
+      className,
+      radius = 800,
+      autoRotateSpeed = 0.02,
+      onItemClick,
+      ...props
+    },
     ref,
   ) => {
     const [rotation, setRotation] = useState(0);
     const [isScrolling, setIsScrolling] = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
+    const [lastMouseX, setLastMouseX] = useState(0);
     const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const animationFrameRef = useRef<number | null>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     // Effect to handle scroll-based rotation
     useEffect(() => {
       const handleScroll = () => {
+        if (isDragging) return; // Don't update rotation while dragging
+
         setIsScrolling(true);
         if (scrollTimeoutRef.current) {
           clearTimeout(scrollTimeoutRef.current);
@@ -65,12 +77,46 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
           clearTimeout(scrollTimeoutRef.current);
         }
       };
-    }, []);
+    }, [isDragging]);
 
-    // Effect for auto-rotation when not scrolling
+    // Handle mouse drag events
+    const handleMouseDown = (e: React.MouseEvent) => {
+      e.preventDefault();
+      setIsDragging(true);
+      setLastMouseX(e.clientX);
+    };
+
+    // Effect for mouse move and up events (global)
+    useEffect(() => {
+      const handleMouseMove = (e: MouseEvent) => {
+        if (!isDragging) return;
+
+        const deltaX = e.clientX - lastMouseX;
+        const rotationChange = deltaX * 0.5; // Sensitivity adjustment
+
+        setRotation((prev) => prev + rotationChange);
+        setLastMouseX(e.clientX);
+      };
+
+      const handleMouseUp = () => {
+        setIsDragging(false);
+      };
+
+      if (isDragging) {
+        document.addEventListener("mousemove", handleMouseMove);
+        document.addEventListener("mouseup", handleMouseUp);
+      }
+
+      return () => {
+        document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseup", handleMouseUp);
+      };
+    }, [isDragging, lastMouseX]);
+
+    // Effect for auto-rotation when not scrolling or dragging
     useEffect(() => {
       const autoRotate = () => {
-        if (!isScrolling) {
+        if (!isScrolling && !isDragging) {
           setRotation((prev) => prev + autoRotateSpeed);
         }
         animationFrameRef.current = requestAnimationFrame(autoRotate);
@@ -83,7 +129,7 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
           cancelAnimationFrame(animationFrameRef.current);
         }
       };
-    }, [isScrolling, autoRotateSpeed]);
+    }, [isScrolling, isDragging, autoRotateSpeed]);
 
     const anglePerItem = 360 / items.length;
 
@@ -93,10 +139,12 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
         role="region"
         aria-label="Circular 3D Gallery"
         className={cn(
-          "relative w-full h-full flex items-center justify-center",
+          "relative w-full h-full flex items-center justify-center cursor-grab select-none",
+          isDragging && "cursor-grabbing",
           className,
         )}
         style={{ perspective: "2000px" }}
+        onMouseDown={handleMouseDown}
         {...props}
       >
         <div
@@ -120,17 +168,22 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                 key={item.photo.url}
                 role="group"
                 aria-label={item.common}
-                className="absolute w-[300px] h-[400px] cursor-pointer"
+                className="absolute w-[400px] h-[500px] cursor-pointer"
                 style={{
                   transform: `rotateY(${itemAngle}deg) translateZ(${radius}px)`,
                   left: "50%",
                   top: "50%",
-                  marginLeft: "-150px",
-                  marginTop: "-200px",
+                  marginLeft: "-200px",
+                  marginTop: "-250px",
                   opacity: opacity,
                   transition: "opacity 0.3s linear",
                 }}
-                onClick={() => onItemClick?.(item)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!isDragging) {
+                    onItemClick?.(item);
+                  }
+                }}
               >
                 <div className="relative w-full h-full rounded-lg shadow-2xl overflow-hidden group border border-border bg-card/70 dark:bg-card/30 backdrop-blur-lg hover:scale-105 transition-transform duration-300">
                   <img
@@ -145,9 +198,6 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                     <em className="text-sm italic opacity-80">
                       {item.binomial}
                     </em>
-                    <p className="text-xs mt-2 opacity-70">
-                      Photo by: {item.photo.by}
-                    </p>
                   </div>
                 </div>
               </div>
