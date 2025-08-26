@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 
 const InteractiveSelector = () => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [animatedOptions, setAnimatedOptions] = useState([]);
+  const [animatedOptions, setAnimatedOptions] = useState<number[]>([]);
+  const [minWidth, setMinWidth] = useState(60);
+  const [minHeight, setMinHeight] = useState(100);
+  const [isMobile, setIsMobile] = useState(false);
 
   const options = [
     {
@@ -32,14 +35,27 @@ const InteractiveSelector = () => {
     },
   ];
 
-  const handleOptionClick = (index) => {
+  const handleOptionClick = (index: number) => {
     if (index !== activeIndex) {
       setActiveIndex(index);
     }
   };
 
   useEffect(() => {
-    const timers = [];
+    const updateDimensions = () => {
+      const width = window.innerWidth;
+      setMinWidth(width < 640 ? 40 : 60);
+      setMinHeight(width < 640 ? 80 : 100);
+      setIsMobile(width < 640);
+    };
+
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    return () => window.removeEventListener('resize', updateDimensions);
+  }, []);
+
+  useEffect(() => {
+    const timers: NodeJS.Timeout[] = [];
 
     options.forEach((_, i) => {
       const timer = setTimeout(() => {
@@ -75,8 +91,8 @@ const InteractiveSelector = () => {
               transform: animatedOptions.includes(index)
                 ? "translateX(0)"
                 : "translateX(-60px)",
-              minWidth: window.innerWidth < 640 ? "40px" : "60px",
-              minHeight: window.innerWidth < 640 ? "80px" : "100px",
+              minWidth: `${minWidth}px`,
+              minHeight: `${minHeight}px`,
               margin: 0,
               borderRadius: 0,
               borderWidth: "2px",
@@ -89,7 +105,7 @@ const InteractiveSelector = () => {
                   ? "0 20px 60px rgba(0,0,0,0.50)"
                   : "0 10px 30px rgba(0,0,0,0.30)",
               flex:
-                window.innerWidth < 640
+                isMobile
                   ? activeIndex === index
                     ? "3 1 0%"
                     : "1 1 0%"

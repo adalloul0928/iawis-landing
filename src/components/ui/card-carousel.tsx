@@ -36,6 +36,7 @@ export const CardCarousel: React.FC<CarouselProps> = ({
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [swiperInstance, setSwiperInstance] = useState<any>(null);
+  const [spaceBetween, setSpaceBetween] = useState(30);
 
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
@@ -46,6 +47,16 @@ export const CardCarousel: React.FC<CarouselProps> = ({
     setIsModalOpen(false);
     setSelectedProduct(null);
   };
+
+  React.useEffect(() => {
+    const updateSpacing = () => {
+      setSpaceBetween(window.innerWidth < 640 ? 30 : 50);
+    };
+
+    updateSpacing();
+    window.addEventListener('resize', updateSpacing);
+    return () => window.removeEventListener('resize', updateSpacing);
+  }, []);
   const css = `
   .swiper {
     width: 100%;
@@ -88,7 +99,7 @@ export const CardCarousel: React.FC<CarouselProps> = ({
           <div className="w-full max-w-none px-4 sm:px-16">
             <Swiper
               onSwiper={setSwiperInstance}
-              spaceBetween={window.innerWidth < 640 ? 30 : 50}
+              spaceBetween={spaceBetween}
               autoplay={{
                 delay: autoplayDelay,
                 disableOnInteraction: false,

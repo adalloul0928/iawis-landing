@@ -81,7 +81,7 @@ const InteractiveSelector = () => {
       <div className="h-12"></div>
 
       {/* Options Container */}
-      <div className="options flex w-full max-w-[900px] min-w-[600px] h-[400px] mx-0 items-stretch overflow-hidden relative">
+      <div className="options flex w-full max-w-[90vw] sm:max-w-[900px] h-[400px] mx-auto items-stretch overflow-hidden relative">
         {options.map((option, index) => (
           <div
             key={index}
@@ -98,7 +98,7 @@ const InteractiveSelector = () => {
               transform: animatedOptions.includes(index)
                 ? "translateX(0)"
                 : "translateX(-60px)",
-              minWidth: "60px",
+              minWidth: activeIndex === index ? "200px" : "80px",
               minHeight: "100px",
               margin: 0,
               borderRadius: 0,
