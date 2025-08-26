@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200">
+  <rect width="300" height="200" fill="#1e293b"/>
+  <rect x="50" y="50" width="200" height="100" fill="#334155" rx="10"/>
+  <path d="M150 60 L170 80 L150 120 L130 80 Z" fill="#f59e0b"/>
+  <text x="150" y="160" text-anchor="middle" fill="#94a3b8" font-family="system-ui" font-size="14">OceanGuard Shield</text>
+</svg>
+
+
+

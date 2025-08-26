@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400">
+  <rect width="300" height="400" fill="#dbeafe"/>
+  <rect x="50" y="50" width="200" height="200" fill="#60a5fa" rx="100"/>
+  <circle cx="150" cy="150" r="60" fill="#3b82f6"/>
+  <rect x="100" y="220" width="100" height="20" fill="#3b82f6" rx="10"/>
+  <rect x="120" y="250" width="60" height="15" fill="#3b82f6" rx="7.5"/>
+  <text x="150" y="320" text-anchor="middle" fill="#1e40af" font-family="system-ui" font-size="16" font-weight="600">Michael Rodriguez</text>
+  <text x="150" y="340" text-anchor="middle" fill="#2563eb" font-family="system-ui" font-size="14">Backend Engineer</text>
+</svg>
+
+
+

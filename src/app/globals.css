@@ -223,41 +223,77 @@
 
 /* Variation 1: Separated Rotation and Arc Growth */
 @keyframes smooth-rotation {
-  0% { --smooth-rotation: 0deg; }
-  100% { --smooth-rotation: 360deg; }
+  0% {
+    --smooth-rotation: 0deg;
+  }
+  100% {
+    --smooth-rotation: 360deg;
+  }
 }
 
 @keyframes smooth-arc-pulse {
-  0% { --smooth-arc-size: 30deg; }
-  50% { --smooth-arc-size: 180deg; }
-  100% { --smooth-arc-size: 30deg; }
+  0% {
+    --smooth-arc-size: 30deg;
+  }
+  50% {
+    --smooth-arc-size: 180deg;
+  }
+  100% {
+    --smooth-arc-size: 30deg;
+  }
 }
 
 /* Variation 2: Mathematical Sine Wave Growth */
 @keyframes sine-rotation {
-  0% { --sine-rotation: 0deg; }
-  100% { --sine-rotation: 360deg; }
+  0% {
+    --sine-rotation: 0deg;
+  }
+  100% {
+    --sine-rotation: 360deg;
+  }
 }
 
 @keyframes sine-arc-growth {
-  0% { --sine-arc-size: 45deg; }
-  25% { --sine-arc-size: 120deg; }
-  50% { --sine-arc-size: 240deg; }
-  75% { --sine-arc-size: 120deg; }
-  100% { --sine-arc-size: 45deg; }
+  0% {
+    --sine-arc-size: 45deg;
+  }
+  25% {
+    --sine-arc-size: 120deg;
+  }
+  50% {
+    --sine-arc-size: 240deg;
+  }
+  75% {
+    --sine-arc-size: 120deg;
+  }
+  100% {
+    --sine-arc-size: 45deg;
+  }
 }
 
 /* Variation 3: Ultra-Smooth Bezier Curves */
 @keyframes bezier-rotation {
-  0% { --bezier-rotation: 0deg; }
-  100% { --bezier-rotation: 360deg; }
+  0% {
+    --bezier-rotation: 0deg;
+  }
+  100% {
+    --bezier-rotation: 360deg;
+  }
 }
 
 @keyframes bezier-arc-breathing {
-  0% { --bezier-arc-size: 40deg; }
-  33% { --bezier-arc-size: 140deg; }
-  66% { --bezier-arc-size: 280deg; }
-  100% { --bezier-arc-size: 40deg; }
+  0% {
+    --bezier-arc-size: 40deg;
+  }
+  33% {
+    --bezier-arc-size: 140deg;
+  }
+  66% {
+    --bezier-arc-size: 280deg;
+  }
+  100% {
+    --bezier-arc-size: 40deg;
+  }
 }
 
 /* Method 3: Transform + Box-Shadow Pulse Animations */
@@ -287,13 +323,13 @@
 
 @keyframes inner-glow-pulse {
   0% {
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.2);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
   }
   50% {
-    box-shadow: inset 0 0 0 2px rgba(255,255,255,0.6);
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.6);
   }
   100% {
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.2);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
   }
 }
 
@@ -364,7 +400,7 @@
     opacity: 1;
   }
   100% {
-    y: 'calc(100vh + 100px)';
+    y: "calc(100vh + 100px)";
     opacity: 0;
     scale: 0.8;
   }
@@ -384,22 +420,48 @@
 }
 
 @keyframes test-button-rotation {
-  0% { --test-rotation: 0deg; }
-  100% { --test-rotation: 360deg; }
+  0% {
+    --test-rotation: 0deg;
+  }
+  100% {
+    --test-rotation: 360deg;
+  }
 }
 
 @keyframes test-button-pulse {
-  0% { --test-arc-size: 15deg; }
-  10% { --test-arc-size: 25deg; }
-  20% { --test-arc-size: 40deg; }
-  30% { --test-arc-size: 60deg; }
-  40% { --test-arc-size: 80deg; }
-  50% { --test-arc-size: 90deg; }
-  60% { --test-arc-size: 80deg; }
-  70% { --test-arc-size: 60deg; }
-  80% { --test-arc-size: 40deg; }
-  90% { --test-arc-size: 25deg; }
-  100% { --test-arc-size: 15deg; }
+  0% {
+    --test-arc-size: 15deg;
+  }
+  10% {
+    --test-arc-size: 25deg;
+  }
+  20% {
+    --test-arc-size: 40deg;
+  }
+  30% {
+    --test-arc-size: 60deg;
+  }
+  40% {
+    --test-arc-size: 80deg;
+  }
+  50% {
+    --test-arc-size: 90deg;
+  }
+  60% {
+    --test-arc-size: 80deg;
+  }
+  70% {
+    --test-arc-size: 60deg;
+  }
+  80% {
+    --test-arc-size: 40deg;
+  }
+  90% {
+    --test-arc-size: 25deg;
+  }
+  100% {
+    --test-arc-size: 15deg;
+  }
 }
 
 @layer utilities {
@@ -415,24 +477,60 @@
   .pr-safe {
     padding-right: env(safe-area-inset-right);
   }
-  
+
   /* Enhanced safe area utilities for mobile browser UI */
   .pb-safe-enhanced {
     padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
   }
-  
+
   .mb-safe-enhanced {
     margin-bottom: max(1.5rem, env(safe-area-inset-bottom));
   }
-  
+
   /* Mobile-specific bottom spacing for when browser UI is hidden */
   @media screen and (max-width: 768px) {
     .pb-safe-enhanced {
       padding-bottom: max(2rem, env(safe-area-inset-bottom));
     }
-    
+
     .mb-safe-enhanced {
       margin-bottom: max(2rem, env(safe-area-inset-bottom));
     }
   }
+
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
 }
