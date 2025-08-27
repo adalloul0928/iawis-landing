@@ -8,7 +8,6 @@ import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import { SparklesIcon } from "lucide-react";
 import {
   Autoplay,
   EffectCoverflow,
@@ -16,9 +15,9 @@ import {
   Pagination,
 } from "swiper/modules";
 
-import { Badge } from "@/components/ui/badge";
 import { ProductModal } from "@/components/ui/product-modal";
 import { Product } from "@/types/product";
+import { useResponsiveCardDimensions, getResponsiveSpacing } from "@/lib/carousel-config";
 
 interface CarouselProps {
   products: Product[];
@@ -36,7 +35,10 @@ export const CardCarousel: React.FC<CarouselProps> = ({
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [swiperInstance, setSwiperInstance] = useState<any>(null);
-  const [spaceBetween, setSpaceBetween] = useState(30);
+  
+  // Use responsive dimensions from shared config
+  const cardDimensions = useResponsiveCardDimensions();
+  const spacing = getResponsiveSpacing(cardDimensions.width);
 
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
@@ -48,33 +50,29 @@ export const CardCarousel: React.FC<CarouselProps> = ({
     setSelectedProduct(null);
   };
 
-  React.useEffect(() => {
-    const updateSpacing = () => {
-      setSpaceBetween(window.innerWidth < 640 ? 30 : 50);
-    };
-
-    updateSpacing();
-    window.addEventListener('resize', updateSpacing);
-    return () => window.removeEventListener('resize', updateSpacing);
-  }, []);
+  // Dynamic CSS based on responsive dimensions with viewport constraints
+  const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1400;
+  const viewportHeight = typeof window !== 'undefined' ? window.innerHeight : 900;
+  
+  // Ensure carousel fits within viewport
+  const maxCarouselWidth = Math.min(cardDimensions.width * 3, viewportWidth * 0.9);
+  const maxCarouselHeight = Math.min(cardDimensions.height, viewportHeight * 0.8);
+  
   const css = `
   .swiper {
     width: 100%;
+    max-width: ${maxCarouselWidth}px;
+    max-height: ${maxCarouselHeight}px;
     padding-bottom: 50px;
   }
   
   .swiper-slide {
     background-position: center;
     background-size: cover;
-    width: 350px;
-    height: 500px;
-  }
-  
-  @media (min-width: 640px) {
-    .swiper-slide {
-      width: 600px;
-      height: 900px;
-    }
+    width: ${cardDimensions.width}px;
+    height: ${cardDimensions.height}px;
+    max-width: ${Math.min(cardDimensions.width, viewportWidth * 0.3)}px;
+    max-height: ${Math.min(cardDimensions.height, viewportHeight * 0.7)}px;
   }
   
   .swiper-slide img {
@@ -99,7 +97,7 @@ export const CardCarousel: React.FC<CarouselProps> = ({
           <div className="w-full max-w-none px-4 sm:px-16">
             <Swiper
               onSwiper={setSwiperInstance}
-              spaceBetween={spaceBetween}
+              spaceBetween={spacing.medium}
               autoplay={{
                 delay: autoplayDelay,
                 disableOnInteraction: false,
@@ -126,9 +124,9 @@ export const CardCarousel: React.FC<CarouselProps> = ({
                   >
                     <Image
                       src={product.image}
-                      width={350}
-                      height={500}
-                      sizes="(max-width: 640px) 350px, 600px"
+                      width={cardDimensions.width}
+                      height={cardDimensions.height}
+                      sizes={`${cardDimensions.width}px`}
                       className="size-full rounded-xl object-cover transition-transform duration-300 group-hover:scale-105"
                       alt={product.name}
                     />

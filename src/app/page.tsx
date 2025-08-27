@@ -63,19 +63,18 @@ export default function Home() {
 
       {/* Navigation to carousels - only show after 3 clicks */}
       {showNavigation && (
-        <div className="absolute top-4 left-4 sm:top-6 sm:left-6 flex flex-col gap-2 max-h-[80vh] overflow-y-auto animate-fade-in">
+        <div className="absolute top-4 left-4 sm:top-6 sm:left-6 flex flex-col gap-2 animate-fade-in">
           <a
             href="/coverflow-framer"
-            className="inline-flex items-center px-4 py-2 bg-blue-800/80 hover:bg-blue-700/80 border border-blue-600/50 rounded-lg text-white transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25 backdrop-blur-sm"
+            className="inline-flex items-center mt-10 px-4 py-2 bg-purple-800/80 hover:bg-purple-700/80 border border-purple-600/50 rounded-lg text-white transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25 backdrop-blur-sm"
           >
             Option 1{" "}
           </a>
-
           <a
             href="/coverflow-clean"
-            className="inline-flex items-center px-4 py-2 bg-blue-800/80 hover:bg-blue-700/80 border border-blue-600/50 rounded-lg text-white transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25 backdrop-blur-sm"
+            className="inline-flex items-center px-4 py-2 bg-purple-800/80 hover:bg-purple-700/80 border border-purple-600/50 rounded-lg text-white transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25 backdrop-blur-sm"
           >
-            Clean Option
+            Option 1b
           </a>{" "}
           {/* 
         <a

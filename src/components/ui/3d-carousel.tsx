@@ -77,7 +77,11 @@ const keywords = [
 ];
 
 const duration = 0.15;
-const transition = { duration, ease: [0.32, 0.72, 0, 1] as const, filter: "blur(4px)" };
+const transition = {
+  duration,
+  ease: [0.32, 0.72, 0, 1] as const,
+  filter: "blur(4px)",
+};
 const transitionOverlay = { duration: 0.5, ease: [0.32, 0.72, 0, 1] as const };
 
 const Carousel = memo(
@@ -126,7 +130,9 @@ const Carousel = memo(
           }}
           onDrag={(_, info) =>
             isCarouselActive &&
-            rotation.set(rotation.get() + info.offset.x * (isScreenSizeSm ? 0.08 : 0.05))
+            rotation.set(
+              rotation.get() + info.offset.x * (isScreenSizeSm ? 0.08 : 0.05),
+            )
           }
           onDragEnd={(_, info) =>
             isCarouselActive &&
@@ -182,17 +188,20 @@ interface ThreeDPhotoCarouselProps {
   onProductClick?: (product: Product) => void;
 }
 
-function ThreeDPhotoCarousel({ products, onProductClick }: ThreeDPhotoCarouselProps = {}) {
+function ThreeDPhotoCarousel({
+  products,
+  onProductClick,
+}: ThreeDPhotoCarouselProps = {}) {
   const [activeImg, setActiveImg] = useState<string | null>(null);
   const [isCarouselActive, setIsCarouselActive] = useState(true);
   const controls = useAnimation();
-  
+
   const defaultCards = useMemo(
     () => keywords.map((keyword) => `https://picsum.photos/200/300?${keyword}`),
     [],
   );
-  
-  const cards = products ? products.map(p => p.image) : defaultCards;
+
+  const cards = products ? products.map((p) => p.image) : defaultCards;
   const productList = products || [];
 
   useEffect(() => {
@@ -249,7 +258,9 @@ function ThreeDPhotoCarousel({ products, onProductClick }: ThreeDPhotoCarouselPr
       </AnimatePresence>
       <div className="relative h-screen w-full overflow-hidden">
         <Carousel
-          handleClick={handleClick}
+          handleClick={() => {
+            console.log("here");
+          }}
           controls={controls}
           cards={cards}
           isCarouselActive={isCarouselActive}

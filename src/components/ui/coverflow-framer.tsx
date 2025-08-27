@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Product } from "@/types/product";
+import { useResponsiveCardDimensions, getResponsiveSpacing } from "@/lib/carousel-config";
 
 interface CoverflowFramerProps {
   products: Product[];
@@ -18,27 +19,24 @@ export const CoverflowFramer: React.FC<CoverflowFramerProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const [scrollDelta, setScrollDelta] = useState(0);
   const [dragOffset, setDragOffset] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
   const scrollThreshold = 100;
   const dragThreshold = 100;
 
-  // Detect mobile screen size
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
+  // Use shared responsive dimensions
+  const cardDimensions = useResponsiveCardDimensions();
+  const spacing = getResponsiveSpacing(cardDimensions.width);
 
   // Calculate positions and transforms for left-to-right flow
   const getItemTransform = (index: number) => {
     let position = (index - currentIndex + products.length) % products.length;
 
-    // Responsive values based on screen size
-    const spacing = isMobile ? 200 : 520;
+    // Responsive values based on card dimensions and viewport
+    const isMobile = cardDimensions.width <= 400;
+    const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1400;
+    const spacingValue = isMobile ? 200 : Math.min(
+      cardDimensions.width * 0.6,  // Reduced from 0.85
+      viewportWidth * 0.25         // Max 25% of viewport width
+    );
     const depth = isMobile ? 100 : 180;
     const rotation = isMobile ? 6 : 12;
     const maxScale = isMobile ? 1.05 : 1.3;
@@ -47,7 +45,7 @@ export const CoverflowFramer: React.FC<CoverflowFramerProps> = ({
     const blurStep = isMobile ? 1.0 : 1.8;
 
     // Position 0 = leftmost (largest), increasing positions go right and get progressively smaller
-    const baseX = position * spacing;
+    const baseX = position * spacingValue;
     const baseZ = -position * depth;
     const rotateY = -position * rotation;
     const scale = Math.max(0.5, maxScale - position * scaleStep);
@@ -131,7 +129,7 @@ export const CoverflowFramer: React.FC<CoverflowFramerProps> = ({
       <motion.div
         className="relative w-full h-full flex items-center justify-start ml-8 md:ml-50 cursor-grab active:cursor-grabbing touch-pan-y"
         style={{ 
-          perspective: isMobile ? "600px" : "1400px",
+          perspective: cardDimensions.width <= 400 ? "600px" : "1400px",
           touchAction: "pan-y pinch-zoom"
         }}
         onWheel={handleWheel}
@@ -153,8 +151,8 @@ export const CoverflowFramer: React.FC<CoverflowFramerProps> = ({
               key={product.id}
               className="absolute cursor-pointer"
               style={{
-                width: isMobile ? "250px" : "600px",
-                height: isMobile ? "350px" : "750px",
+                width: `${cardDimensions.width}px`,
+                height: `${cardDimensions.height}px`,
                 transformStyle: "preserve-3d",
                 zIndex: transform.zIndex,
               }}

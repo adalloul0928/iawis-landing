@@ -4,6 +4,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Product } from "@/types/product";
+import {
+  useResponsiveCardDimensions,
+  getResponsiveSpacing,
+} from "@/lib/carousel-config";
 
 interface CoverflowCleanProps {
   products: Product[];
@@ -18,45 +22,36 @@ export const CoverflowClean: React.FC<CoverflowCleanProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const [scrollDelta, setScrollDelta] = useState(0);
   const [dragOffset, setDragOffset] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
   const scrollThreshold = 100;
   const dragThreshold = 100;
 
-  // Detect screen size and set responsive values
-  useEffect(() => {
-    const updateScreenSize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    updateScreenSize();
-    window.addEventListener("resize", updateScreenSize);
-    return () => window.removeEventListener("resize", updateScreenSize);
-  }, []);
+  // Use shared responsive dimensions
+  const cardDimensions = useResponsiveCardDimensions();
+  const spacing = getResponsiveSpacing(cardDimensions.width);
 
   // Calculate positions and transforms for left-to-right flow
   const getItemTransform = (index: number) => {
     let position = (index - currentIndex + products.length) % products.length;
 
-    // Dynamic responsive values based on viewport size
-    const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
-    const viewportHeight = typeof window !== 'undefined' ? window.innerHeight : 768;
-    
-    // Scale factors based on viewport
-    const widthScale = Math.min(Math.max(viewportWidth / 1024, 0.5), 2);
-    const heightScale = Math.min(Math.max(viewportHeight / 768, 0.5), 2);
-    const viewportScale = Math.min(widthScale, heightScale);
-    
-    // Responsive values that scale with viewport
-    const spacing = viewportScale * (isMobile ? 180 : 400);
-    const depth = viewportScale * (isMobile ? 80 : 150);
+    // Responsive values based on card dimensions and viewport
+    const isMobile = cardDimensions.width <= 400;
+    const viewportWidth =
+      typeof window !== "undefined" ? window.innerWidth : 1400;
+    const spacingValue = isMobile
+      ? 180
+      : Math.min(
+          cardDimensions.width * 0.6, // Reduced to match coverflow-framer
+          viewportWidth * 0.25, // Reduced to match coverflow-framer
+        );
+    const depth = isMobile ? 80 : 150;
     const rotation = isMobile ? 6 : 12;
-    const maxScale = Math.min(1.05 + (viewportScale - 0.5) * 0.5, isMobile ? 1.2 : 1.5);
+    const maxScale = isMobile ? 1.2 : 1.5;
     const scaleStep = isMobile ? 0.12 : 0.18;
-    const maxBlur = Math.min(viewportScale * 8, isMobile ? 4 : 10);
+    const maxBlur = isMobile ? 4 : 10;
     const blurStep = isMobile ? 1.0 : 1.6;
 
     // Position 0 = leftmost (largest), increasing positions go right and get progressively smaller
-    const baseX = position * spacing;
+    const baseX = position * spacingValue;
     const baseZ = -position * depth;
     const rotateY = -position * rotation;
     const scale = Math.max(0.5, maxScale - position * scaleStep);
@@ -138,11 +133,10 @@ export const CoverflowClean: React.FC<CoverflowCleanProps> = ({
 
       {/* Carousel Container */}
       <motion.div
-        className="relative w-full h-full flex items-center justify-start cursor-grab active:cursor-grabbing touch-pan-y"
-        style={{ 
-          perspective: isMobile ? "600px" : "1400px",
-          touchAction: "pan-y pinch-zoom",
-          marginLeft: isMobile ? "2rem" : `${Math.min(12, (typeof window !== 'undefined' ? window.innerWidth : 1024) / 80)}rem`
+        className="relative w-full h-full flex items-center justify-start ml-8 md:ml-50 cursor-grab active:cursor-grabbing touch-pan-y"
+        style={{
+          perspective: cardDimensions.width <= 400 ? "600px" : "1400px",
+          touchAction: "pan-y pinch-zoom"
         }}
         onWheel={handleWheel}
         drag="x"
@@ -157,22 +151,14 @@ export const CoverflowClean: React.FC<CoverflowCleanProps> = ({
         {/* Items */}
         {products.map((product, index) => {
           const transform = getItemTransform(index);
-          
-          // Dynamic image sizing based on viewport
-          const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
-          const viewportHeight = typeof window !== 'undefined' ? window.innerHeight : 768;
-          const viewportScale = Math.min(Math.max(viewportWidth / 1024, 0.5), 2);
-          
-          const imageWidth = Math.round(viewportScale * (isMobile ? 250 : 500));
-          const imageHeight = Math.round(viewportScale * (isMobile ? 350 : 650));
 
           return (
             <motion.div
               key={product.id}
               className="absolute cursor-pointer"
               style={{
-                width: `${imageWidth}px`,
-                height: `${imageHeight}px`,
+                width: `${cardDimensions.width}px`,
+                height: `${cardDimensions.height}px`,
                 transformStyle: "preserve-3d",
                 zIndex: transform.zIndex,
               }}
@@ -197,18 +183,18 @@ export const CoverflowClean: React.FC<CoverflowCleanProps> = ({
                 rotateY: transform.rotateY + (transform.rotateY !== 0 ? -2 : 0),
               }}
             >
-              <div className="relative w-full h-full overflow-hidden">
+              <div className="relative w-full h-full overflow-hidden bg-transparent">
                 <Image
                   src={product.image}
                   alt={product.name}
                   fill
                   className="object-cover rounded-2xl"
                 />
-                
+
                 {/* Side Panel (only for focused item) */}
                 {currentIndex === index && (
-                  <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-white via-white/95 to-transparent flex items-center">
-                    <div className="p-2 sm:p-4 text-right">
+                  <div className="absolute -left-8 top-0 bottom-0 w-2/5 bg-gradient-to-r from-white via-white/95 to-transparent flex items-center">
+                    <div className="p-2 sm:p-4 text-left ml-8">
                       <h2 className="text-xs sm:text-base font-bold mb-1 leading-tight text-gray-900">
                         {product.name}
                       </h2>

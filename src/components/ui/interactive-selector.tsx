@@ -6,10 +6,15 @@ import {
   FaHotTub,
   FaHiking,
 } from "react-icons/fa";
+import { useResponsiveCardDimensions, getCarouselContainerDimensions } from "@/lib/carousel-config";
 
 const InteractiveSelector = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [animatedOptions, setAnimatedOptions] = useState<number[]>([]);
+  
+  // Use shared responsive dimensions
+  const cardDimensions = useResponsiveCardDimensions();
+  const containerDimensions = getCarouselContainerDimensions(cardDimensions, 'selector');
 
   const options = [
     {
@@ -81,7 +86,10 @@ const InteractiveSelector = () => {
       <div className="h-12"></div>
 
       {/* Options Container */}
-      <div className="options flex w-full max-w-[90vw] sm:max-w-[900px] h-[400px] mx-auto items-stretch overflow-hidden relative">
+      <div 
+        className="options flex w-full max-w-[90vw] sm:max-w-[900px] mx-auto items-stretch overflow-hidden relative"
+        style={{ height: `${containerDimensions.height}px` }}
+      >
         {options.map((option, index) => (
           <div
             key={index}

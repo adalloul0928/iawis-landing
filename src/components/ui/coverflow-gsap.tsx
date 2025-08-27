@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import { Product } from "@/types/product";
+import { useResponsiveCardDimensions, getResponsiveSpacing } from "@/lib/carousel-config";
 
 // Register GSAP plugin
 if (typeof window !== "undefined") {
@@ -30,6 +31,10 @@ export const CoverflowGsap: React.FC<CoverflowGsapProps> = ({
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
   const scrollThreshold = 100;
   const dragThreshold = 100;
+
+  // Use shared responsive dimensions
+  const cardDimensions = useResponsiveCardDimensions();
+  const spacing = getResponsiveSpacing(cardDimensions.width);
 
   // Initialize GSAP animations
   useEffect(() => {
@@ -249,12 +254,12 @@ export const CoverflowGsap: React.FC<CoverflowGsapProps> = ({
                 ref={(el) => (itemRefs.current[index] = el)}
                 className="absolute cursor-pointer"
                 style={{
-                  width: "450px",
-                  height: "600px",
+                  width: `${cardDimensions.width}px`,
+                  height: `${cardDimensions.height}px`,
                   left: "50%",
                   top: "50%",
-                  marginLeft: "-225px",
-                  marginTop: "-300px",
+                  marginLeft: `${-cardDimensions.width / 2}px`,
+                  marginTop: `${-cardDimensions.height / 2}px`,
                   transformStyle: "preserve-3d",
                 }}
                 onClick={() => handleItemClick(index)}
