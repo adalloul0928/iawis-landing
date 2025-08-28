@@ -157,7 +157,7 @@ const CircularGalleryDemo = () => {
   const [dimensions, setDimensions] = useState({
     radius: 800,
     cardWidth: 300,
-    cardHeight: 400
+    cardHeight: 400,
   });
 
   // Animation state
@@ -171,23 +171,21 @@ const CircularGalleryDemo = () => {
     const updateDimensions = () => {
       const width = window.innerWidth;
       if (width >= 1536) {
-        setDimensions({ radius: 800, cardWidth: 300, cardHeight: 400 });
+        setDimensions({ radius: 900, cardWidth: 350, cardHeight: 437.5 });
       } else if (width >= 1280) {
-        setDimensions({ radius: 700, cardWidth: 270, cardHeight: 360 });
+        setDimensions({ radius: 800, cardWidth: 325, cardHeight: 405 });
       } else if (width >= 1024) {
-        setDimensions({ radius: 600, cardWidth: 240, cardHeight: 320 });
-      } else if (width >= 768) {
-        setDimensions({ radius: 450, cardWidth: 180, cardHeight: 240 });
+        setDimensions({ radius: 700, cardWidth: 260, cardHeight: 340 });
       } else if (width >= 640) {
-        setDimensions({ radius: 350, cardWidth: 150, cardHeight: 200 });
+        setDimensions({ radius: 650, cardWidth: 240, cardHeight: 320 });
       } else {
-        setDimensions({ radius: 250, cardWidth: 120, cardHeight: 160 });
+        setDimensions({ radius: 550, cardWidth: 200, cardHeight: 250 });
       }
     };
 
     updateDimensions();
-    window.addEventListener('resize', updateDimensions);
-    return () => window.removeEventListener('resize', updateDimensions);
+    window.addEventListener("resize", updateDimensions);
+    return () => window.removeEventListener("resize", updateDimensions);
   }, []);
 
   const handleItemClick = useCallback((item: GalleryItem, _index: number) => {
@@ -286,7 +284,7 @@ const CircularGalleryDemo = () => {
         <div
           className="w-full h-full"
           style={{
-            perspective: `${dimensions.radius * 2.5}px`,
+            perspective: `${Math.max(dimensions.radius * 2.5, 2000)}px`,
             transformStyle: "preserve-3d",
           }}
         >
