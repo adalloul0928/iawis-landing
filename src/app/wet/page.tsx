@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -268,18 +269,24 @@ const CircularGalleryDemo = () => {
       {/* This inner container sticks to the top while scrolling */}
       <div className="w-full h-screen sticky top-0 flex flex-col items-center justify-center overflow-hidden">
         <div className="absolute top-16 left-1/2 -translate-x-1/2 z-10">
-          <Link
-            href="/"
-            className="cursor-pointer hover:opacity-80 transition-opacity"
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={animationPhase === "complete" ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.8, type: "spring", bounce: 0.3, delay: 0.2 }}
           >
-            <Image
-              src="/always-wet-logo.svg"
-              alt="Always Wet Logo"
-              width={600}
-              height={144}
-              className="h-20 sm:h-24 md:h-28 lg:h-32 xl:h-36 w-auto"
-            />
-          </Link>
+            <Link
+              href="/"
+              className="cursor-pointer hover:opacity-80 transition-opacity"
+            >
+              <Image
+                src="/always-wet-logo.svg"
+                alt="Always Wet Logo"
+                width={600}
+                height={144}
+                className="h-20 sm:h-24 md:h-28 lg:h-32 xl:h-36 w-auto"
+              />
+            </Link>
+          </motion.div>
         </div>
         <div
           className="w-full h-full"

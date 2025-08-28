@@ -54,21 +54,21 @@ export default function Home() {
       {/* Centered Logo */}
       <Logo className="absolute top-[25%] left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
 
-      {/* Buttons at Bottom Center */}
-      <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 px-4 sm:bottom-16 pb-safe-enhanced flex flex-col sm:flex-row gap-4 items-center">
-        <WaitlistForm />
+      {/* Secret button in top left */}
+      <button
+        type="button"
+        onClick={handlePreviewClothes}
+        className="absolute top-4 left-4 bg-transparent border-none text-transparent hover:bg-transparent transition-all duration-300 rounded-full px-6 py-4 text-md font-medium shadow-none whitespace-nowrap h-[56px] w-[120px] cursor-pointer z-20"
+        style={{
+          boxShadow: "none",
+        }}
+      >
+        Preview Clothes
+      </button>
 
-        {/* Preview Clothes Button */}
-        <button
-          type="button"
-          onClick={handlePreviewClothes}
-          className="bg-transparent border-none text-transparent hover:bg-transparent transition-all duration-300 rounded-full px-6 py-4 sm:px-8 sm:py-6 text-md sm:text-base font-medium shadow-none whitespace-nowrap h-[56px] sm:h-[72px] cursor-pointer"
-          style={{
-            boxShadow: "none",
-          }}
-        >
-          Preview Clothes
-        </button>
+      {/* Waitlist Form at Bottom Center */}
+      <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 px-4 sm:bottom-16 pb-safe-enhanced">
+        <WaitlistForm />
       </div>
 
       {/* Screen Transition Overlay */}

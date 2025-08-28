@@ -79,7 +79,7 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
           // Combine both horizontal and vertical scroll deltas
           // For vertical: scroll down = rotate right (positive), scroll up = rotate left (negative)
           // For horizontal: scroll right = rotate left (negative), scroll left = rotate right (positive)
-          const rotationDelta = (e.deltaY * 0.3) + (-e.deltaX * 0.3);
+          const rotationDelta = e.deltaY * 0.3 + -e.deltaX * 0.3;
           setRotation((prev) => prev + rotationDelta);
 
           scrollTimeoutRef.current = setTimeout(() => {
@@ -321,7 +321,7 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                   >
                     <h2 className="text-xl font-bold">{item.common}</h2>
                     <em className="text-sm italic">{item.binomial}</em>
-                    <p className="text-xs mt-2">Photo by: {item.photo.by}</p>
+                    <p className="text-xs mt-2">{item.photo.text}</p>
                   </div>
                 </div>
               </div>
