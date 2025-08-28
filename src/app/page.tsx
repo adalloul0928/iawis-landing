@@ -64,10 +64,9 @@ export default function Home() {
         <button
           type="button"
           onClick={handlePreviewClothes}
-          className="bg-white/20 border-none text-white hover:bg-white/30 transition-all duration-300 rounded-full px-6 py-4 sm:px-8 sm:py-6 text-md sm:text-base font-medium shadow-none hover:scale-105 active:scale-95 whitespace-nowrap h-[56px] sm:h-[72px] cursor-pointer backdrop-blur-md"
+          className="bg-transparent border-none text-transparent hover:bg-transparent transition-all duration-300 rounded-full px-6 py-4 sm:px-8 sm:py-6 text-md sm:text-base font-medium shadow-none whitespace-nowrap h-[56px] sm:h-[72px] cursor-pointer"
           style={{
-            boxShadow:
-              "0 0 20px rgba(255,255,255,0.3), inset 0 0 20px rgba(255,255,255,0.1)",
+            boxShadow: "none",
           }}
         >
           Preview Clothes
