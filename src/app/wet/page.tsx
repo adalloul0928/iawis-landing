@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   CircularGallery,
   type GalleryItem,
@@ -172,13 +173,15 @@ const CircularGalleryDemo = () => {
       {/* This inner container sticks to the top while scrolling */}
       <div className="w-full h-screen sticky top-0 flex flex-col items-center justify-center overflow-hidden">
         <div className="absolute top-16 left-1/2 -translate-x-1/2 z-10">
-          <Image 
-            src="/always-wet-logo.svg" 
-            alt="Always Wet Logo" 
-            width={600}
-            height={144}
-            className="h-36 w-auto"
-          />
+          <Link href="/" className="cursor-pointer hover:opacity-80 transition-opacity">
+            <Image 
+              src="/always-wet-logo.svg" 
+              alt="Always Wet Logo" 
+              width={600}
+              height={144}
+              className="h-36 w-auto"
+            />
+          </Link>
         </div>
         <div className="w-full h-full">
           <CircularGallery items={galleryData} onItemClick={handleItemClick} radius={800} />

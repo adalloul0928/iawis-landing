@@ -39,11 +39,16 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
     const [isScrolling, setIsScrolling] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
     const [isPointerDown, setIsPointerDown] = useState(false);
+    const [velocity, setVelocity] = useState(0);
+    const [isMomentum, setIsMomentum] = useState(false);
     const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const animationFrameRef = useRef<number | null>(null);
+    const momentumFrameRef = useRef<number | null>(null);
     const lastScrollYRef = useRef(0);
     const lastPointerXRef = useRef(0);
     const pointerDownXRef = useRef(0);
+    const lastMoveTimeRef = useRef(0);
+    const velocityHistoryRef = useRef<number[]>([]);
     const containerRef = useRef<HTMLDivElement>(null);
     const DRAG_THRESHOLD = 5; // pixels
 
@@ -129,20 +134,35 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
       if (!isPointerDown) return;
       
       const currentX = e.clientX;
+      const currentTime = Date.now();
       const totalDragDistance = Math.abs(currentX - pointerDownXRef.current);
       
       // Only start dragging if we've moved beyond the threshold
       if (totalDragDistance > DRAG_THRESHOLD && !isDragging) {
         setIsDragging(true);
+        lastMoveTimeRef.current = currentTime;
       }
       
       if (isDragging) {
         const dragDelta = currentX - lastPointerXRef.current;
+        const timeDelta = currentTime - lastMoveTimeRef.current;
         
         // Use same sensitivity as scroll (0.3) but invert for natural horizontal interaction
         // Drag right = rotate left (negative), drag left = rotate right (positive)
         const rotationDelta = -dragDelta * 0.3;
         setRotation((prev) => prev + rotationDelta);
+        
+        // Calculate velocity for momentum
+        if (timeDelta > 0) {
+          const currentVelocity = dragDelta / timeDelta;
+          velocityHistoryRef.current.push(currentVelocity);
+          // Keep only last 5 velocity measurements
+          if (velocityHistoryRef.current.length > 5) {
+            velocityHistoryRef.current.shift();
+          }
+        }
+        
+        lastMoveTimeRef.current = currentTime;
       }
       
       lastPointerXRef.current = currentX;
@@ -150,19 +170,59 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
 
     const handlePointerUp = () => {
       console.log('Container pointer up, isDragging:', isDragging);
+      
+      if (isDragging && velocityHistoryRef.current.length > 0) {
+        // Calculate average velocity from recent measurements
+        const avgVelocity = velocityHistoryRef.current.reduce((a, b) => a + b, 0) / velocityHistoryRef.current.length;
+        const momentumVelocity = -avgVelocity * 0.3 * 5; // Reduced from 20 to 5
+        
+        if (Math.abs(momentumVelocity) > 0.05) {
+          setVelocity(momentumVelocity);
+          setIsMomentum(true);
+        }
+      }
+      
       setIsPointerDown(false);
       setIsDragging(false);
+      velocityHistoryRef.current = [];
     };
 
     const handlePointerLeave = () => {
       setIsPointerDown(false);
       setIsDragging(false);
+      velocityHistoryRef.current = [];
     };
+
+    // Effect for momentum animation
+    useEffect(() => {
+      if (!isMomentum) return;
+      
+      const animateMomentum = () => {
+        if (Math.abs(velocity) < 0.01) {
+          setIsMomentum(false);
+          setVelocity(0);
+          return;
+        }
+        
+        setRotation(prev => prev + velocity);
+        setVelocity(prev => prev * 0.95); // Friction/decay
+        
+        momentumFrameRef.current = requestAnimationFrame(animateMomentum);
+      };
+      
+      momentumFrameRef.current = requestAnimationFrame(animateMomentum);
+      
+      return () => {
+        if (momentumFrameRef.current) {
+          cancelAnimationFrame(momentumFrameRef.current);
+        }
+      };
+    }, [isMomentum, velocity]);
 
     // Effect for auto-rotation when not scrolling or dragging
     useEffect(() => {
       const autoRotate = () => {
-        if (!isScrolling && !isDragging && !isPointerDown) {
+        if (!isScrolling && !isDragging && !isPointerDown && !isMomentum) {
           setRotation((prev) => prev + autoRotateSpeed);
         }
         animationFrameRef.current = requestAnimationFrame(autoRotate);
@@ -175,7 +235,7 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
           cancelAnimationFrame(animationFrameRef.current);
         }
       };
-    }, [isScrolling, isDragging, isPointerDown, autoRotateSpeed]);
+    }, [isScrolling, isDragging, isPointerDown, isMomentum, autoRotateSpeed]);
 
     const anglePerItem = 360 / items.length;
 
@@ -217,7 +277,14 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                 key={item.photo.url}
                 role="group"
                 aria-label={item.common}
-                className="absolute w-[300px] h-[400px] cursor-pointer"
+                className="absolute w-[300px] h-[400px] cursor-pointer pointer-events-none"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!isDragging) {
+                    console.log('Calling onItemClick for:', item.common);
+                    onItemClick?.(item, i);
+                  }
+                }}
                 style={{
                   transform: `rotateY(${itemAngle}deg) translateZ(${radius}px)`,
                   left: "50%",
@@ -226,15 +293,7 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                   marginTop: "-200px",
                   opacity: opacity,
                   transition: "opacity 0.3s linear",
-                }}
-                onPointerUp={(e) => {
-                  console.log('Photo pointer up, isDragging:', isDragging);
-                  e.stopPropagation();
-                  // Only trigger click if we weren't dragging
-                  if (!isDragging) {
-                    console.log('Calling onItemClick for:', item.common);
-                    onItemClick?.(item, i);
-                  }
+                  pointerEvents: isDragging || isMomentum ? 'none' : 'auto'
                 }}
               >
                 <div className="relative w-full h-full rounded-lg shadow-2xl overflow-hidden group border border-border bg-card/70 dark:bg-card/30 backdrop-blur-lg">
@@ -242,12 +301,13 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                     src={item.photo.url}
                     alt={item.photo.text}
                     fill
-                    className="object-cover"
+                    className="object-cover select-none"
                     style={{ objectPosition: item.photo.pos || "center" }}
                     loading={i < 4 ? "eager" : "lazy"}
                     priority={i < 4}
                     sizes="(max-width: 640px) 400px, 500px"
                     quality={95}
+                    draggable={false}
                   />
                   {/* Replaced text-primary-foreground with text-white for consistent color */}
                   <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent text-white">
