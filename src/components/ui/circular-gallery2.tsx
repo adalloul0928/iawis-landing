@@ -33,9 +33,12 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
   ) => {
     const [rotation, setRotation] = useState(0);
     const [isScrolling, setIsScrolling] = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
     const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const animationFrameRef = useRef<number | null>(null);
     const lastScrollYRef = useRef(0);
+    const lastPointerXRef = useRef(0);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     // Effect to handle infinite scroll-based rotation
     useEffect(() => {
@@ -63,19 +66,80 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
         }, 150);
       };
 
+      // Handle horizontal wheel events (trackpad, mouse wheel)
+      const handleWheel = (e: WheelEvent) => {
+        // Check if there's horizontal scroll (deltaX)
+        if (Math.abs(e.deltaX) > 0) {
+          e.preventDefault(); // Prevent default horizontal scroll
+          
+          setIsScrolling(true);
+          if (scrollTimeoutRef.current) {
+            clearTimeout(scrollTimeoutRef.current);
+          }
+
+          // Use horizontal wheel delta with inverted direction for natural interaction
+          // Scroll right = rotate left (negative), scroll left = rotate right (positive)
+          const rotationDelta = -e.deltaX * 0.3;
+          setRotation((prev) => prev + rotationDelta);
+
+          scrollTimeoutRef.current = setTimeout(() => {
+            setIsScrolling(false);
+          }, 150);
+        }
+      };
+
       window.addEventListener("scroll", handleScroll, { passive: true });
+      
+      // Add wheel listener specifically to the container for horizontal scrolling
+      if (containerRef.current) {
+        containerRef.current.addEventListener("wheel", handleWheel, { passive: false });
+      }
+      
       return () => {
         window.removeEventListener("scroll", handleScroll);
+        if (containerRef.current) {
+          containerRef.current.removeEventListener("wheel", handleWheel);
+        }
         if (scrollTimeoutRef.current) {
           clearTimeout(scrollTimeoutRef.current);
         }
       };
     }, []);
 
-    // Effect for auto-rotation when not scrolling
+    // Drag event handlers
+    const handlePointerDown = (e: React.PointerEvent) => {
+      setIsDragging(true);
+      lastPointerXRef.current = e.clientX;
+      if (containerRef.current) {
+        containerRef.current.setPointerCapture(e.pointerId);
+      }
+    };
+
+    const handlePointerMove = (e: React.PointerEvent) => {
+      if (!isDragging) return;
+      
+      const currentX = e.clientX;
+      const dragDelta = currentX - lastPointerXRef.current;
+      lastPointerXRef.current = currentX;
+      
+      // Use same sensitivity as scroll (0.3) but invert for natural horizontal interaction
+      // Drag right = rotate left (negative), drag left = rotate right (positive)
+      const rotationDelta = -dragDelta * 0.3;
+      setRotation((prev) => prev + rotationDelta);
+    };
+
+    const handlePointerUp = () => {
+      setIsDragging(false);
+    };
+
+    const handlePointerLeave = () => {
+      setIsDragging(false);
+    };
+
+    // Effect for auto-rotation when not scrolling or dragging
     useEffect(() => {
       const autoRotate = () => {
-        if (!isScrolling) {
+        if (!isScrolling && !isDragging) {
           setRotation((prev) => prev + autoRotateSpeed);
         }
         animationFrameRef.current = requestAnimationFrame(autoRotate);
@@ -88,20 +152,25 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
           cancelAnimationFrame(animationFrameRef.current);
         }
       };
-    }, [isScrolling, autoRotateSpeed]);
+    }, [isScrolling, isDragging, autoRotateSpeed]);
 
     const anglePerItem = 360 / items.length;
 
     return (
       <div
-        ref={ref}
+        ref={containerRef}
         role="region"
         aria-label="Circular 3D Gallery"
         className={cn(
-          "relative w-full h-full flex items-center justify-center",
+          "relative w-full h-full flex items-center justify-center select-none",
+          isDragging ? "cursor-grabbing" : "cursor-grab",
           className,
         )}
-        style={{ perspective: "2000px" }}
+        style={{ perspective: "2000px", touchAction: "none" }}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerLeave={handlePointerLeave}
         {...props}
       >
         <div

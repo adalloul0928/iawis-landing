@@ -118,7 +118,7 @@ const CircularGalleryDemo = () => {
       <div className="w-full h-screen sticky top-0 flex flex-col items-center justify-center overflow-hidden">
         <div className="text-center mb-8 absolute top-16 z-10">
           <h1 className="text-4xl font-bold">Animal Gallery</h1>
-          <p className="text-muted-foreground">Scroll to rotate the gallery</p>
+          <p className="text-muted-foreground">Scroll or drag to rotate the gallery</p>
         </div>
         <div className="w-full h-full">
           <CircularGallery items={galleryData} />
