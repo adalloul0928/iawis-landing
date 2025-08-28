@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   CircularGallery,
   GalleryItem,
@@ -108,8 +109,82 @@ const galleryData: GalleryItem[] = [
 ];
 
 const CircularGalleryDemo = () => {
+  const searchParams = useSearchParams();
+  const isPreview = searchParams.get("preview") === "true";
+
+  // Animation state
+  const [animationPhase, setAnimationPhase] = useState<
+    "initial" | "animating" | "complete"
+  >("initial");
+  const [animationProgress, setAnimationProgress] = useState(0);
+
+  // Start animation when page loads
+  useEffect(() => {
+    if (isPreview) {
+      // Start animation after a very brief delay
+      const timer = setTimeout(() => {
+        setAnimationPhase("animating");
+
+        // Animate over 0.8 seconds (very fast)
+        const startTime = Date.now();
+        const duration = 800;
+
+        const animate = () => {
+          const elapsed = Date.now() - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+
+          // Use easing function for smooth deceleration
+          const easedProgress = 1 - Math.pow(1 - progress, 3);
+
+          setAnimationProgress(easedProgress);
+
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            setAnimationPhase("complete");
+          }
+        };
+
+        requestAnimationFrame(animate);
+      }, 200);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isPreview]);
+
+  // Calculate animation values
+  const getAnimationStyle = () => {
+    if (animationPhase === "initial") {
+      return {
+        transform: "translateZ(-2000px) scale(0.1)",
+        opacity: 0,
+        filter: "blur(10px)", // Add blur effect for depth
+      };
+    }
+
+    if (animationPhase === "animating") {
+      // Start from far back and small, come forward and grow
+      const z = -2000 + animationProgress * 2000; // -2000px to 0px
+      const scale = 0.1 + animationProgress * 0.9; // 0.1 to 1.0
+      const opacity = animationProgress;
+      const blur = 10 - animationProgress * 10; // Blur decreases as it comes forward
+
+      return {
+        transform: `translateZ(${z}px) scale(${scale})`,
+        opacity: opacity,
+        filter: `blur(${blur}px)`,
+      };
+    }
+
+    // Complete state
+    return {
+      transform: "translateZ(0px) scale(1)",
+      opacity: 1,
+      filter: "blur(0px)",
+    };
+  };
+
   return (
-    // This outer container provides the scrollable height
     <div
       className="w-full bg-black text-foreground"
       style={{ height: "500vh" }}
@@ -118,10 +193,34 @@ const CircularGalleryDemo = () => {
       <div className="w-full h-screen sticky top-0 flex flex-col items-center justify-center overflow-hidden">
         <div className="text-center mb-8 absolute top-16 z-10">
           <h1 className="text-4xl font-bold">Animal Gallery</h1>
-          <p className="text-muted-foreground">Scroll or drag to rotate the gallery</p>
+          <p className="text-muted-foreground">
+            Scroll or drag to rotate the gallery
+          </p>
         </div>
-        <div className="w-full h-full">
-          <CircularGallery items={galleryData} />
+        <div
+          className="w-full h-full"
+          style={{
+            perspective: "2000px",
+            transformStyle: "preserve-3d",
+          }}
+        >
+          <div
+            className="w-full h-full"
+            style={{
+              transformStyle: "preserve-3d",
+              transition: "none", // Disable CSS transitions for our custom animation
+              ...getAnimationStyle(),
+            }}
+          >
+            <CircularGallery
+              items={galleryData}
+              autoRotateSpeed={
+                animationPhase === "animating"
+                  ? 2.0 // Very fast rotation during animation (100x normal speed)
+                  : 0.02 // Normal speed when not animating
+              }
+            />
+          </div>
         </div>
       </div>
     </div>
