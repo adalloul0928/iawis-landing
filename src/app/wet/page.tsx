@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import {
   CircularGallery,
   type GalleryItem,
@@ -170,11 +171,14 @@ const CircularGalleryDemo = () => {
     >
       {/* This inner container sticks to the top while scrolling */}
       <div className="w-full h-screen sticky top-0 flex flex-col items-center justify-center overflow-hidden">
-        <div className="text-center mb-8 absolute top-16 z-10">
-          <h1 className="text-4xl font-bold">Apple Photos Style Gallery</h1>
-          <p className="text-muted-foreground">
-            Scroll or drag to rotate • Click photos to expand
-          </p>
+        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-10">
+          <Image 
+            src="/always-wet-logo.svg" 
+            alt="Always Wet Logo" 
+            width={600}
+            height={144}
+            className="h-36 w-auto"
+          />
         </div>
         <div className="w-full h-full">
           <CircularGallery items={galleryData} onItemClick={handleItemClick} radius={800} />
