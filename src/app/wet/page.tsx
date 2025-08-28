@@ -283,7 +283,7 @@ const CircularGalleryDemo = () => {
                 alt="Always Wet Logo"
                 width={600}
                 height={144}
-                className="h-20 sm:h-24 md:h-28 lg:h-32 xl:h-36 w-auto"
+                className="h-32 sm:h-24 md:h-28 lg:h-32 xl:h-36 w-auto"
               />
             </Link>
           </motion.div>

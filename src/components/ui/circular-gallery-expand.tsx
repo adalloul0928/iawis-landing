@@ -105,14 +105,15 @@ export function ExpandedGallery({
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
             </div>
 
-            {/* Content Panel */}
+            {/* Content Panel - Apple-like design */}
             <motion.div
-              className="px-6 py-4 bg-white/5 backdrop-blur-xl shadow-inner"
+              className="px-6 py-5 bg-white/[0.02] backdrop-blur-2xl"
               style={{
                 background:
-                  "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)",
+                  "linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)",
                 boxShadow:
-                  "inset 0 1px 0 rgba(255,255,255,0.2), 0 1px 20px rgba(0,0,0,0.1)",
+                  "inset 0 1px 0 rgba(255,255,255,0.1), 0 -1px 0 rgba(255,255,255,0.05)",
+                borderTop: "1px solid rgba(255,255,255,0.08)",
               }}
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -123,25 +124,24 @@ export function ExpandedGallery({
                 damping: 30,
               }}
             >
-              <div className="grid md:grid-cols-3 gap-4">
-                {/* Title and Scientific Name */}
-                <div className="md:col-span-2 space-y-2">
-                  <h2 className="text-2xl md:text-3xl font-bold text-white">
+              {/* Mobile layout: title/desc on left, price on right */}
+              <div className="flex items-start justify-between md:grid md:grid-cols-3 gap-4">
+                {/* Title and Description */}
+                <div className="flex-1 md:col-span-2 space-y-1">
+                  <h2 className="text-xl md:text-2xl font-medium text-white/95 tracking-tight">
                     {selectedItem.common}
                   </h2>
                   {selectedItem.photo.text && (
-                    <p className="text-white/80 leading-relaxed mt-3">
+                    <p className="text-sm md:text-base text-white/65 leading-relaxed font-light">
                       {selectedItem.photo.text}
                     </p>
                   )}
                 </div>
 
-                {/* Metadata */}
-                <div className="space-y-3">
-                  <div className="bg-white/5 rounded-lg p-4 border border-white/20 backdrop-blur-lg shadow-inner">
-                    <div className="text-2xl font-bold text-white text-center">
-                      $69.69
-                    </div>
+                {/* Price - right side on mobile, separate column on desktop */}
+                <div className="flex-shrink-0 md:col-span-1 flex md:justify-center">
+                  <div className="text-xl md:text-2xl font-medium text-white/95">
+                    $69.69
                   </div>
                 </div>
               </div>
