@@ -246,8 +246,8 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                     style={{ objectPosition: item.photo.pos || "center" }}
                     loading={i < 4 ? "eager" : "lazy"}
                     priority={i < 4}
-                    sizes="(max-width: 640px) 300px, 400px"
-                    quality={90}
+                    sizes="(max-width: 640px) 400px, 500px"
+                    quality={95}
                   />
                   {/* Replaced text-primary-foreground with text-white for consistent color */}
                   <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent text-white">

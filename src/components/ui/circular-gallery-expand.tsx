@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
+import Image from 'next/image';
 import { GalleryItem } from './circular-gallery2';
 
 interface ExpandedGalleryProps {
@@ -43,7 +44,7 @@ export function ExpandedGallery({ selectedItem, onClose }: ExpandedGalleryProps)
       >
         {/* Backdrop */}
         <motion.div
-          className="absolute inset-0 bg-black/80 backdrop-blur-xl"
+          className="absolute inset-0 bg-black/90 backdrop-blur-sm"
           onClick={onClose}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -68,26 +69,31 @@ export function ExpandedGallery({ selectedItem, onClose }: ExpandedGalleryProps)
 
         {/* Main Content */}
         <motion.div
-          className="relative max-w-[85vw] max-h-[85vh] w-auto mx-auto"
+          className="relative max-w-[85vw] max-h-[85vh] w-auto mx-auto will-change-transform"
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.8, opacity: 0 }}
           transition={{ 
             type: "spring", 
-            stiffness: 300, 
-            damping: 30,
-            duration: 0.5 
+            stiffness: 260, 
+            damping: 25
           }}
         >
           <div className="bg-white/10 backdrop-blur-xl rounded-2xl overflow-hidden border border-white/20 shadow-2xl">
             {/* Image Container */}
             <div className="relative">
-              <img
-                src={selectedItem.photo.url}
-                alt={selectedItem.photo.text}
-                className="max-w-[85vw] h-auto object-contain max-h-[60vh] rounded-t-2xl block"
-                draggable={false}
-              />
+              <div className="relative w-full" style={{ aspectRatio: 'auto' }}>
+                <Image
+                  src={selectedItem.photo.url}
+                  alt={selectedItem.photo.text}
+                  width={800}
+                  height={600}
+                  className="w-full h-auto object-cover max-h-[60vh] rounded-t-2xl"
+                  draggable={false}
+                  quality={95}
+                  priority
+                />
+              </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
             </div>
 
