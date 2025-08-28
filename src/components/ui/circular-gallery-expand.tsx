@@ -99,7 +99,11 @@ export function ExpandedGallery({ selectedItem, onClose }: ExpandedGalleryProps)
 
             {/* Content Panel */}
             <motion.div
-              className="p-6 bg-gradient-to-t from-white/15 to-white/5"
+              className="px-6 py-4 bg-white/5 backdrop-blur-xl shadow-inner"
+              style={{
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.2), 0 1px 20px rgba(0,0,0,0.1)'
+              }}
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.1, type: "spring", stiffness: 400, damping: 30 }}
@@ -110,9 +114,6 @@ export function ExpandedGallery({ selectedItem, onClose }: ExpandedGalleryProps)
                   <h2 className="text-2xl md:text-3xl font-bold text-white">
                     {selectedItem.common}
                   </h2>
-                  <p className="text-lg md:text-xl text-white/70 italic">
-                    {selectedItem.binomial}
-                  </p>
                   {selectedItem.photo.text && (
                     <p className="text-white/80 leading-relaxed mt-3">
                       {selectedItem.photo.text}
@@ -122,36 +123,11 @@ export function ExpandedGallery({ selectedItem, onClose }: ExpandedGalleryProps)
                 
                 {/* Metadata */}
                 <div className="space-y-3">
-                  <div className="bg-white/10 rounded-lg p-3 border border-white/10">
-                    <div className="flex items-center gap-2 text-white/70">
-                      <div className="w-6 h-6 rounded-md bg-white/10 flex items-center justify-center">
-                        <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
-                          <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM1.5 8a6.5 6.5 0 1 1 13 0A6.5 6.5 0 0 1 1.5 8z"/>
-                          <path d="M8 3.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.252.434l-2.5 1.5a.5.5 0 1 1-.496-.868L8 7.354V4a.5.5 0 0 1 .5-.5z"/>
-                        </svg>
-                      </div>
-                      <div>
-                        <div className="text-sm font-medium text-white">Photography</div>
-                        <div className="text-xs">by {selectedItem.photo.by}</div>
-                      </div>
+                  <div className="bg-white/5 rounded-lg p-4 border border-white/20 backdrop-blur-lg shadow-inner">
+                    <div className="text-2xl font-bold text-white text-center">
+                      $69.69
                     </div>
                   </div>
-                  
-                  {selectedItem.photo.pos && (
-                    <div className="bg-white/10 rounded-lg p-3 border border-white/10">
-                      <div className="flex items-center gap-2 text-white/70">
-                        <div className="w-6 h-6 rounded-md bg-white/10 flex items-center justify-center">
-                          <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
-                            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
-                          </svg>
-                        </div>
-                        <div>
-                          <div className="text-sm font-medium text-white">Location</div>
-                          <div className="text-xs">{selectedItem.photo.pos}</div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
             </motion.div>
