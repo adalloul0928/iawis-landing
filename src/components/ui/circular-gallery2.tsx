@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, HTMLAttributes } from "react";
+import Image from "next/image";
 
 // A simple utility for conditional class names
 const cn = (...classes: (string | undefined | null | false)[]) => {
@@ -237,11 +238,16 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                 }}
               >
                 <div className="relative w-full h-full rounded-lg shadow-2xl overflow-hidden group border border-border bg-card/70 dark:bg-card/30 backdrop-blur-lg">
-                  <img
+                  <Image
                     src={item.photo.url}
                     alt={item.photo.text}
-                    className="absolute inset-0 w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                     style={{ objectPosition: item.photo.pos || "center" }}
+                    loading={i < 4 ? "eager" : "lazy"}
+                    priority={i < 4}
+                    sizes="(max-width: 640px) 300px, 400px"
+                    quality={90}
                   />
                   {/* Replaced text-primary-foreground with text-white for consistent color */}
                   <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent text-white">
