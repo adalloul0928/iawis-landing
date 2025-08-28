@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -155,6 +155,12 @@ const galleryData: GalleryItem[] = [
 const CircularGalleryDemo = () => {
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
 
+  // Animation state
+  const [animationPhase, setAnimationPhase] = useState<
+    "initial" | "animating" | "complete"
+  >("initial");
+  const [animationProgress, setAnimationProgress] = useState(0);
+
   const handleItemClick = (item: GalleryItem, _index: number) => {
     console.log("Item clicked:", item.common);
     setSelectedItem(item);
@@ -162,6 +168,68 @@ const CircularGalleryDemo = () => {
 
   const handleClose = () => {
     setSelectedItem(null);
+  };
+
+  // Start animation when page loads
+  useEffect(() => {
+    // Start animation after a brief delay
+    const timer = setTimeout(() => {
+      setAnimationPhase("animating");
+
+      // Animate over 0.4 seconds
+      const startTime = Date.now();
+      const duration = 400;
+
+      const animate = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+
+        // Use easing function for smooth deceleration
+        const easedProgress = 1 - Math.pow(1 - progress, 3);
+
+        setAnimationProgress(easedProgress);
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          setAnimationPhase("complete");
+        }
+      };
+
+      requestAnimationFrame(animate);
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Calculate animation values
+  const getAnimationStyle = () => {
+    if (animationPhase === "initial") {
+      return {
+        transform: "translateZ(-2000px) scale(0.1)",
+        opacity: 0,
+        filter: "blur(10px)",
+      };
+    }
+
+    if (animationPhase === "animating") {
+      const z = -2000 + animationProgress * 2000;
+      const scale = 0.1 + animationProgress * 0.9;
+      const opacity = animationProgress;
+      const blur = 10 - animationProgress * 10;
+
+      return {
+        transform: `translateZ(${z}px) scale(${scale})`,
+        opacity: opacity,
+        filter: `blur(${blur}px)`,
+      };
+    }
+
+    return {
+      transform: "translateZ(0px) scale(1)",
+      opacity: 1,
+      filter: "blur(0px)",
+    };
   };
 
   return (
@@ -173,18 +241,41 @@ const CircularGalleryDemo = () => {
       {/* This inner container sticks to the top while scrolling */}
       <div className="w-full h-screen sticky top-0 flex flex-col items-center justify-center overflow-hidden">
         <div className="absolute top-16 left-1/2 -translate-x-1/2 z-10">
-          <Link href="/" className="cursor-pointer hover:opacity-80 transition-opacity">
-            <Image 
-              src="/always-wet-logo.svg" 
-              alt="Always Wet Logo" 
+          <Link
+            href="/"
+            className="cursor-pointer hover:opacity-80 transition-opacity"
+          >
+            <Image
+              src="/always-wet-logo.svg"
+              alt="Always Wet Logo"
               width={600}
               height={144}
               className="h-36 w-auto"
             />
           </Link>
         </div>
-        <div className="w-full h-full">
-          <CircularGallery items={galleryData} onItemClick={handleItemClick} radius={800} />
+        <div
+          className="w-full h-full"
+          style={{
+            perspective: "2000px",
+            transformStyle: "preserve-3d",
+          }}
+        >
+          <div
+            className="w-full h-full"
+            style={{
+              transformStyle: "preserve-3d",
+              transition: "none",
+              ...getAnimationStyle(),
+            }}
+          >
+            <CircularGallery
+              items={galleryData}
+              onItemClick={handleItemClick}
+              radius={800}
+              autoRotateSpeed={animationPhase === "animating" ? 2.0 : 0.02}
+            />
+          </div>
         </div>
       </div>
 
