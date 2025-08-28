@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -154,6 +154,11 @@ const galleryData: GalleryItem[] = [
 
 const CircularGalleryDemo = () => {
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
+  const [dimensions, setDimensions] = useState({
+    radius: 800,
+    cardWidth: 300,
+    cardHeight: 400
+  });
 
   // Animation state
   const [animationPhase, setAnimationPhase] = useState<
@@ -161,14 +166,38 @@ const CircularGalleryDemo = () => {
   >("initial");
   const [animationProgress, setAnimationProgress] = useState(0);
 
-  const handleItemClick = (item: GalleryItem, _index: number) => {
+  // Update dimensions based on screen size
+  useEffect(() => {
+    const updateDimensions = () => {
+      const width = window.innerWidth;
+      if (width >= 1536) {
+        setDimensions({ radius: 800, cardWidth: 300, cardHeight: 400 });
+      } else if (width >= 1280) {
+        setDimensions({ radius: 700, cardWidth: 270, cardHeight: 360 });
+      } else if (width >= 1024) {
+        setDimensions({ radius: 600, cardWidth: 240, cardHeight: 320 });
+      } else if (width >= 768) {
+        setDimensions({ radius: 450, cardWidth: 180, cardHeight: 240 });
+      } else if (width >= 640) {
+        setDimensions({ radius: 350, cardWidth: 150, cardHeight: 200 });
+      } else {
+        setDimensions({ radius: 250, cardWidth: 120, cardHeight: 160 });
+      }
+    };
+
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    return () => window.removeEventListener('resize', updateDimensions);
+  }, []);
+
+  const handleItemClick = useCallback((item: GalleryItem, _index: number) => {
     console.log("Item clicked:", item.common);
     setSelectedItem(item);
-  };
+  }, []);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setSelectedItem(null);
-  };
+  }, []);
 
   // Start animation when page loads
   useEffect(() => {
@@ -236,7 +265,7 @@ const CircularGalleryDemo = () => {
     // This outer container provides the scrollable height
     <div
       className="w-full bg-black text-foreground relative"
-      style={{ height: "500vh" }}
+      style={{ height: "100vh" }}
     >
       {/* This inner container sticks to the top while scrolling */}
       <div className="w-full h-screen sticky top-0 flex flex-col items-center justify-center overflow-hidden">
@@ -250,14 +279,14 @@ const CircularGalleryDemo = () => {
               alt="Always Wet Logo"
               width={600}
               height={144}
-              className="h-36 w-auto"
+              className="h-20 sm:h-24 md:h-28 lg:h-32 xl:h-36 w-auto"
             />
           </Link>
         </div>
         <div
           className="w-full h-full"
           style={{
-            perspective: "2000px",
+            perspective: `${dimensions.radius * 2.5}px`,
             transformStyle: "preserve-3d",
           }}
         >
@@ -272,7 +301,9 @@ const CircularGalleryDemo = () => {
             <CircularGallery
               items={galleryData}
               onItemClick={handleItemClick}
-              radius={800}
+              radius={dimensions.radius}
+              cardWidth={dimensions.cardWidth}
+              cardHeight={dimensions.cardHeight}
               autoRotateSpeed={animationPhase === "animating" ? 2.0 : 0.02}
             />
           </div>
