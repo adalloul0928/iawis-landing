@@ -1,10 +1,11 @@
 "use client";
 
-import React from "react";
+import { useState } from "react";
 import {
   CircularGallery,
-  GalleryItem,
+  type GalleryItem,
 } from "@/components/ui/circular-gallery2";
+import ExpandedGallery from "@/components/ui/circular-gallery-expand";
 
 const galleryData: GalleryItem[] = [
   {
@@ -108,22 +109,42 @@ const galleryData: GalleryItem[] = [
 ];
 
 const CircularGalleryDemo = () => {
+  const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
+
+  const handleItemClick = (item: GalleryItem, _index: number) => {
+    console.log('Item clicked:', item.common);
+    setSelectedItem(item);
+  };
+
+  const handleClose = () => {
+    setSelectedItem(null);
+  };
+
   return (
     // This outer container provides the scrollable height
     <div
-      className="w-full bg-black text-foreground"
+      className="w-full bg-black text-foreground relative"
       style={{ height: "500vh" }}
     >
       {/* This inner container sticks to the top while scrolling */}
       <div className="w-full h-screen sticky top-0 flex flex-col items-center justify-center overflow-hidden">
         <div className="text-center mb-8 absolute top-16 z-10">
-          <h1 className="text-4xl font-bold">Animal Gallery</h1>
-          <p className="text-muted-foreground">Scroll or drag to rotate the gallery</p>
+          <h1 className="text-4xl font-bold">Apple Photos Style Gallery</h1>
+          <p className="text-muted-foreground">Scroll or drag to rotate • Click photos to expand</p>
         </div>
         <div className="w-full h-full">
-          <CircularGallery items={galleryData} />
+          <CircularGallery 
+            items={galleryData} 
+            onItemClick={handleItemClick}
+          />
         </div>
       </div>
+
+      {/* Expanded Gallery Modal */}
+      <ExpandedGallery 
+        selectedItem={selectedItem} 
+        onClose={handleClose} 
+      />
     </div>
   );
 };

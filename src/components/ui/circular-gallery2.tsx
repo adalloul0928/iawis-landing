@@ -24,21 +24,27 @@ interface CircularGalleryProps extends HTMLAttributes<HTMLDivElement> {
   radius?: number;
   /** Controls the speed of auto-rotation when not scrolling. */
   autoRotateSpeed?: number;
+  /** Callback when an item is clicked */
+  onItemClick?: (item: GalleryItem, index: number) => void;
 }
 
 const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
   (
-    { items, className, radius = 600, autoRotateSpeed = 0.02, ...props },
+    { items, className, radius = 600, autoRotateSpeed = 0.02, onItemClick, ...props },
     ref,
   ) => {
+    console.log('CircularGallery render, onItemClick:', !!onItemClick);
     const [rotation, setRotation] = useState(0);
     const [isScrolling, setIsScrolling] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
+    const [isPointerDown, setIsPointerDown] = useState(false);
     const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const animationFrameRef = useRef<number | null>(null);
     const lastScrollYRef = useRef(0);
     const lastPointerXRef = useRef(0);
+    const pointerDownXRef = useRef(0);
     const containerRef = useRef<HTMLDivElement>(null);
+    const DRAG_THRESHOLD = 5; // pixels
 
     // Effect to handle infinite scroll-based rotation
     useEffect(() => {
@@ -108,38 +114,54 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
 
     // Drag event handlers
     const handlePointerDown = (e: React.PointerEvent) => {
-      setIsDragging(true);
+      console.log('Container pointer down');
+      setIsPointerDown(true);
       lastPointerXRef.current = e.clientX;
-      if (containerRef.current) {
-        containerRef.current.setPointerCapture(e.pointerId);
-      }
+      pointerDownXRef.current = e.clientX;
+      // Temporarily remove pointer capture to test if it's interfering
+      // if (containerRef.current) {
+      //   containerRef.current.setPointerCapture(e.pointerId);
+      // }
     };
 
     const handlePointerMove = (e: React.PointerEvent) => {
-      if (!isDragging) return;
+      if (!isPointerDown) return;
       
       const currentX = e.clientX;
-      const dragDelta = currentX - lastPointerXRef.current;
-      lastPointerXRef.current = currentX;
+      const totalDragDistance = Math.abs(currentX - pointerDownXRef.current);
       
-      // Use same sensitivity as scroll (0.3) but invert for natural horizontal interaction
-      // Drag right = rotate left (negative), drag left = rotate right (positive)
-      const rotationDelta = -dragDelta * 0.3;
-      setRotation((prev) => prev + rotationDelta);
+      // Only start dragging if we've moved beyond the threshold
+      if (totalDragDistance > DRAG_THRESHOLD && !isDragging) {
+        setIsDragging(true);
+      }
+      
+      if (isDragging) {
+        const dragDelta = currentX - lastPointerXRef.current;
+        
+        // Use same sensitivity as scroll (0.3) but invert for natural horizontal interaction
+        // Drag right = rotate left (negative), drag left = rotate right (positive)
+        const rotationDelta = -dragDelta * 0.3;
+        setRotation((prev) => prev + rotationDelta);
+      }
+      
+      lastPointerXRef.current = currentX;
     };
 
     const handlePointerUp = () => {
+      console.log('Container pointer up, isDragging:', isDragging);
+      setIsPointerDown(false);
       setIsDragging(false);
     };
 
     const handlePointerLeave = () => {
+      setIsPointerDown(false);
       setIsDragging(false);
     };
 
     // Effect for auto-rotation when not scrolling or dragging
     useEffect(() => {
       const autoRotate = () => {
-        if (!isScrolling && !isDragging) {
+        if (!isScrolling && !isDragging && !isPointerDown) {
           setRotation((prev) => prev + autoRotateSpeed);
         }
         animationFrameRef.current = requestAnimationFrame(autoRotate);
@@ -152,7 +174,7 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
           cancelAnimationFrame(animationFrameRef.current);
         }
       };
-    }, [isScrolling, isDragging, autoRotateSpeed]);
+    }, [isScrolling, isDragging, isPointerDown, autoRotateSpeed]);
 
     const anglePerItem = 360 / items.length;
 
@@ -166,7 +188,7 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
           isDragging ? "cursor-grabbing" : "cursor-grab",
           className,
         )}
-        style={{ perspective: "2000px", touchAction: "none" }}
+        style={{ perspective: "2000px", touchAction: "pan-y pinch-zoom" }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
@@ -194,7 +216,7 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                 key={item.photo.url}
                 role="group"
                 aria-label={item.common}
-                className="absolute w-[300px] h-[400px]"
+                className="absolute w-[300px] h-[400px] cursor-pointer"
                 style={{
                   transform: `rotateY(${itemAngle}deg) translateZ(${radius}px)`,
                   left: "50%",
@@ -203,6 +225,15 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                   marginTop: "-200px",
                   opacity: opacity,
                   transition: "opacity 0.3s linear",
+                }}
+                onPointerUp={(e) => {
+                  console.log('Photo pointer up, isDragging:', isDragging);
+                  e.stopPropagation();
+                  // Only trigger click if we weren't dragging
+                  if (!isDragging) {
+                    console.log('Calling onItemClick for:', item.common);
+                    onItemClick?.(item, i);
+                  }
                 }}
               >
                 <div className="relative w-full h-full rounded-lg shadow-2xl overflow-hidden group border border-border bg-card/70 dark:bg-card/30 backdrop-blur-lg">
