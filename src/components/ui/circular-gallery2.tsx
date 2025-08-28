@@ -296,7 +296,7 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                   pointerEvents: isDragging || isMomentum ? 'none' : 'auto'
                 }}
               >
-                <div className="relative w-full h-full rounded-lg shadow-2xl overflow-hidden group border border-border bg-card/70 dark:bg-card/30 backdrop-blur-lg">
+                <div className="relative w-full h-full rounded-lg shadow-2xl overflow-hidden group border border-border bg-card/90 dark:bg-card/60" style={{ willChange: 'transform', transform: 'translateZ(0)', WebkitFontSmoothing: 'antialiased' }}>
                   <Image
                     src={item.photo.url}
                     alt={item.photo.text}
@@ -305,17 +305,17 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                     style={{ objectPosition: item.photo.pos || "center" }}
                     loading={i < 4 ? "eager" : "lazy"}
                     priority={i < 4}
-                    sizes="(max-width: 640px) 400px, 500px"
+                    sizes="600px"
                     quality={95}
                     draggable={false}
                   />
                   {/* Replaced text-primary-foreground with text-white for consistent color */}
-                  <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent text-white">
+                  <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent text-white" style={{ WebkitFontSmoothing: 'antialiased' }}>
                     <h2 className="text-xl font-bold">{item.common}</h2>
-                    <em className="text-sm italic opacity-80">
+                    <em className="text-sm italic">
                       {item.binomial}
                     </em>
-                    <p className="text-xs mt-2 opacity-70">
+                    <p className="text-xs mt-2">
                       Photo by: {item.photo.by}
                     </p>
                   </div>
