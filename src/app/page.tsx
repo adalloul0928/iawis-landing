@@ -4,12 +4,7 @@ import { useState } from "react";
 import { Logo } from "@/components/landing/Logo";
 import { SocialIcons } from "@/components/landing/SocialIcons";
 import { WaitlistForm } from "@/components/landing/WaitlistForm";
-import WaterRippleButton from "@/components/ui/WaterRippleButton";
-import LiquidMorphButton from "@/components/ui/LiquidMorphButton";
-import TransitionButtons from "@/components/ui/TransitionButtons";
-import ScreenTransition, {
-  TransitionType,
-} from "@/components/ui/ScreenTransition";
+import ScreenTransition from "@/components/ui/ScreenTransition";
 import { useRouter } from "next/navigation";
 
 /**
@@ -22,33 +17,15 @@ import { useRouter } from "next/navigation";
  * - Expandable waitlist form at bottom
  */
 export default function Home() {
-  const [selectedTransition, setSelectedTransition] =
-    useState<TransitionType>("water-ripple");
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [clickPoint, setClickPoint] = useState({ x: 50, y: 50 });
   const router = useRouter();
 
-  const handleTransitionSelect = (type: TransitionType) => {
-    setSelectedTransition(type);
-  };
-
-  const handlePreviewClick = (e: React.MouseEvent) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-
-    setClickPoint({ x, y });
+  const handlePreviewClothes = () => {
     setIsTransitioning(true);
   };
 
   const handleTransitionComplete = () => {
-    if (selectedTransition === "circle-expand") {
-      router.push(`/option?preview=true&transition=${selectedTransition}`);
-    } else if (selectedTransition === "fade-to-black") {
-      router.push(`/option?preview=true&transition=${selectedTransition}`);
-    } else {
-      router.push(`/circular?preview=true&transition=${selectedTransition}`);
-    }
+    router.push(`/option?preview=true&transition=fade-to-black`);
   };
 
   return (
@@ -79,60 +56,30 @@ export default function Home() {
       {/* Centered Logo */}
       <Logo className="absolute top-[25%] left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
 
-      {/* Transition Selection - Below Logo */}
-      <div className="absolute top-[40%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl px-4">
-        <TransitionButtons onTransitionSelect={handleTransitionSelect} />
+      {/* Buttons at Bottom Center */}
+      <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 px-4 sm:bottom-16 pb-safe-enhanced flex flex-col sm:flex-row gap-4 items-center">
+        <WaitlistForm />
+
+        {/* Preview Clothes Button */}
+        <button
+          type="button"
+          onClick={handlePreviewClothes}
+          className="bg-white/20 border-none text-white hover:bg-white/30 transition-all duration-300 rounded-full px-6 py-4 sm:px-8 sm:py-6 text-md sm:text-base font-medium shadow-none hover:scale-105 active:scale-95 whitespace-nowrap h-[56px] sm:h-[72px] cursor-pointer backdrop-blur-md"
+          style={{
+            boxShadow:
+              "0 0 20px rgba(255,255,255,0.3), inset 0 0 20px rgba(255,255,255,0.1)",
+          }}
+        >
+          Preview Clothes
+        </button>
       </div>
-
-      {/* Preview Button - Below Transition Selection */}
-      <div className="absolute top-[75%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-4">
-        {/* Selected Transition Indicator */}
-        <div className="text-center mb-4">
-          <div className="text-white/80 text-sm mb-2">Selected Transition:</div>
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20">
-            <span className="text-2xl">
-              {selectedTransition === "water-ripple" && "🌊"}
-              {selectedTransition === "liquid-wave" && "🌊"}
-              {selectedTransition === "droplet-explosion" && "💥"}
-              {selectedTransition === "vortex-spiral" && "🌀"}
-              {selectedTransition === "ink-diffusion" && "🖋️"}
-              {selectedTransition === "waterfall-cascade" && "🌊"}
-            </span>
-            <span className="text-white font-medium capitalize">
-              {selectedTransition.replace("-", " ")}
-            </span>
-          </div>
-        </div>
-
-        {/* Preview Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 items-center">
-          <WaterRippleButton
-            onClick={handlePreviewClick}
-            variant="primary"
-            className="w-full sm:w-auto"
-          >
-            🌊 Preview Gallery
-          </WaterRippleButton>
-
-          <LiquidMorphButton
-            onClick={handlePreviewClick}
-            variant="secondary"
-            className="w-full sm:w-auto"
-          >
-            💧 Liquid Preview
-          </LiquidMorphButton>
-        </div>
-      </div>
-
-      {/* Expandable Waitlist Input - Bottom Center */}
-      <WaitlistForm className="absolute bottom-12 left-1/2 transform -translate-x-1/2 px-4 sm:bottom-16 pb-safe-enhanced" />
 
       {/* Screen Transition Overlay */}
       <ScreenTransition
         isActive={isTransitioning}
-        transitionType={selectedTransition}
+        transitionType="fade-to-black"
         onComplete={handleTransitionComplete}
-        clickPoint={clickPoint}
+        clickPoint={{ x: 50, y: 50 }}
       />
     </div>
   );
