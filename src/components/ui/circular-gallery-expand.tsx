@@ -68,7 +68,7 @@ export function ExpandedGallery({ selectedItem, onClose }: ExpandedGalleryProps)
 
         {/* Main Content */}
         <motion.div
-          className="relative max-w-[85vw] max-h-[85vh] w-full mx-4"
+          className="relative max-w-[85vw] max-h-[85vh] w-auto mx-auto"
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.8, opacity: 0 }}
@@ -85,7 +85,7 @@ export function ExpandedGallery({ selectedItem, onClose }: ExpandedGalleryProps)
               <img
                 src={selectedItem.photo.url}
                 alt={selectedItem.photo.text}
-                className="w-full h-auto object-contain max-h-[60vh] rounded-t-2xl"
+                className="max-w-[85vw] h-auto object-contain max-h-[60vh] rounded-t-2xl block"
                 draggable={false}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
