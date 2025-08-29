@@ -155,6 +155,7 @@ const galleryData: GalleryItem[] = [
 
 const CircularGalleryDemo = () => {
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [dimensions, setDimensions] = useState({
     radius: 800,
     cardWidth: 300,
@@ -189,13 +190,19 @@ const CircularGalleryDemo = () => {
     return () => window.removeEventListener("resize", updateDimensions);
   }, []);
 
-  const handleItemClick = useCallback((item: GalleryItem, _index: number) => {
+  const handleItemClick = useCallback((item: GalleryItem, index: number) => {
     console.log("Item clicked:", item.common);
     setSelectedItem(item);
+    setSelectedIndex(index);
   }, []);
 
   const handleClose = useCallback(() => {
     setSelectedItem(null);
+  }, []);
+
+  const handleNavigate = useCallback((index: number) => {
+    setSelectedIndex(index);
+    setSelectedItem(galleryData[index]);
   }, []);
 
   // Start animation when page loads
@@ -361,7 +368,13 @@ const CircularGalleryDemo = () => {
       </div>
 
       {/* Expanded Gallery Modal */}
-      <ExpandedGallery selectedItem={selectedItem} onClose={handleClose} />
+      <ExpandedGallery 
+        selectedItem={selectedItem} 
+        items={galleryData}
+        currentIndex={selectedIndex}
+        onClose={handleClose}
+        onNavigate={handleNavigate}
+      />
     </div>
   );
 };

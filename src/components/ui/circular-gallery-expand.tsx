@@ -8,12 +8,18 @@ import { GalleryItem } from "./circular-gallery2";
 
 interface ExpandedGalleryProps {
   selectedItem: GalleryItem | null;
+  items: GalleryItem[];
+  currentIndex: number;
   onClose: () => void;
+  onNavigate: (index: number) => void;
 }
 
 export function ExpandedGallery({
   selectedItem,
+  items,
+  currentIndex,
   onClose,
+  onNavigate,
 }: ExpandedGalleryProps) {
   useEffect(() => {
     if (!selectedItem) return;
@@ -21,6 +27,12 @@ export function ExpandedGallery({
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         onClose();
+      } else if (e.key === "ArrowLeft") {
+        const newIndex = Math.max(0, currentIndex - 1);
+        onNavigate(newIndex);
+      } else if (e.key === "ArrowRight") {
+        const newIndex = Math.min(items.length - 1, currentIndex + 1);
+        onNavigate(newIndex);
       }
     };
 
@@ -31,7 +43,7 @@ export function ExpandedGallery({
       document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "";
     };
-  }, [selectedItem, onClose]);
+  }, [selectedItem, onClose, currentIndex, items.length, onNavigate]);
 
   if (!selectedItem || typeof window === "undefined") return null;
 
@@ -84,7 +96,28 @@ export function ExpandedGallery({
 
         {/* Main Content */}
         <motion.div
-          className="relative max-w-[85vw] max-h-[85vh] w-auto mx-auto will-change-transform"
+          key={currentIndex}
+          className="relative max-w-[85vw] max-h-[85vh] w-auto mx-auto will-change-transform md:pointer-events-none"
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.2}
+          onDragEnd={(_, { offset, velocity }) => {
+            const swipeThreshold = 50;
+            const velocityThreshold = 500;
+            
+            // Check for swipe gesture on mobile only
+            if (window.innerWidth <= 768) {
+              if (offset.x > swipeThreshold || velocity.x > velocityThreshold) {
+                // Swipe right - go to previous
+                const newIndex = Math.max(0, currentIndex - 1);
+                onNavigate(newIndex);
+              } else if (offset.x < -swipeThreshold || velocity.x < -velocityThreshold) {
+                // Swipe left - go to next
+                const newIndex = Math.min(items.length - 1, currentIndex + 1);
+                onNavigate(newIndex);
+              }
+            }
+          }}
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.8, opacity: 0 }}
