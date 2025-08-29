@@ -21,14 +21,13 @@ export function ExpandedGallery({
   onClose,
   onNavigate,
 }: ExpandedGalleryProps) {
-  const [isLandscape, setIsLandscape] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
-    
+
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
@@ -116,14 +115,17 @@ export function ExpandedGallery({
           onDragEnd={(_, { offset, velocity }) => {
             const swipeThreshold = 50;
             const velocityThreshold = 500;
-            
+
             // Check for swipe gesture on mobile only
             if (window.innerWidth <= 768) {
               if (offset.x > swipeThreshold || velocity.x > velocityThreshold) {
                 // Swipe right - go to previous
                 const newIndex = Math.max(0, currentIndex - 1);
                 onNavigate(newIndex);
-              } else if (offset.x < -swipeThreshold || velocity.x < -velocityThreshold) {
+              } else if (
+                offset.x < -swipeThreshold ||
+                velocity.x < -velocityThreshold
+              ) {
                 // Swipe left - go to next
                 const newIndex = Math.min(items.length - 1, currentIndex + 1);
                 onNavigate(newIndex);
@@ -154,10 +156,6 @@ export function ExpandedGallery({
                   priority={true}
                   loading="eager"
                   sizes="(max-width: 768px) 85vw, 800px"
-                  onLoad={(e) => {
-                    const img = e.target as HTMLImageElement;
-                    setIsLandscape(img.naturalWidth > img.naturalHeight);
-                  }}
                 />
               </div>
 
@@ -167,14 +165,16 @@ export function ExpandedGallery({
               {/* Glass overlay for text - conditional layout */}
               <motion.div
                 className={`absolute bottom-0 left-0 right-0 rounded-2xl ${
-                  isLandscape && isMobile ? "m-3 p-3" : isMobile ? "m-3 p-4" : "m-4 p-5"
+                  isMobile ? "m-3 py-2 px-3" : "m-4 px-4 py-2"
                 }`}
                 style={{
-                  background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))",
+                  background:
+                    "linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))",
                   backdropFilter: "blur(20px) saturate(180%)",
                   WebkitBackdropFilter: "blur(20px) saturate(180%)",
                   border: "1px solid rgba(255, 255, 255, 0.18)",
-                  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.25)",
+                  boxShadow:
+                    "0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.25)",
                 }}
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -185,42 +185,62 @@ export function ExpandedGallery({
                   damping: 30,
                 }}
               >
-                {isLandscape && isMobile ? (
-                  /* Compact single-line layout for landscape images */
-                  <div className="flex items-center justify-between gap-3">
+                {isMobile ? (
+                  /* Single-line layout for all mobile views */
+                  <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2 min-w-0 flex-1">
-                      <h2 className="text-lg md:text-xl font-medium text-white/95 tracking-tight flex-shrink-0" style={{textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)"}}>
+                      <h2
+                        className="text-lg font-medium text-white/95 tracking-tight flex-shrink-0"
+                        style={{ textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)" }}
+                      >
                         {selectedItem.common}
                       </h2>
                       {selectedItem.photo.text && (
                         <>
                           <span className="text-white/70 flex-shrink-0">•</span>
-                          <p className="text-sm md:text-base text-white/85 font-light truncate" style={{textShadow: "0 1px 2px rgba(0, 0, 0, 0.4)"}}>
+                          <p
+                            className="text-sm text-white/85 font-light truncate"
+                            style={{
+                              textShadow: "0 1px 2px rgba(0, 0, 0, 0.4)",
+                            }}
+                          >
                             {selectedItem.photo.text}
                           </p>
                         </>
                       )}
                     </div>
-                    <div className="text-lg md:text-xl font-medium text-white/95 flex-shrink-0" style={{textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)"}}>
+                    <div
+                      className="text-lg font-medium text-white/95 flex-shrink-0"
+                      style={{ textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)" }}
+                    >
                       ${selectedItem.price}
                     </div>
                   </div>
                 ) : (
-                  /* Two-line layout for portrait images */
-                  <div className="space-y-2">
+                  /* Two-line layout for desktop */
+                  <div className="space-y-1">
                     {/* Title and Price Row */}
                     <div className="flex items-center justify-between gap-4">
-                      <h2 className="text-xl md:text-2xl font-medium text-white/95 tracking-tight" style={{textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)"}}>
+                      <h2
+                        className="text-xl md:text-2xl font-medium text-white/95 tracking-tight"
+                        style={{ textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)" }}
+                      >
                         {selectedItem.common}
                       </h2>
-                      <div className="text-xl md:text-2xl font-medium text-white/95" style={{textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)"}}>
+                      <div
+                        className="text-xl md:text-2xl font-medium text-white/95"
+                        style={{ textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)" }}
+                      >
                         ${selectedItem.price}
                       </div>
                     </div>
 
                     {/* Description */}
                     {selectedItem.photo.text && (
-                      <p className="text-sm md:text-base text-white/85 leading-relaxed font-light" style={{textShadow: "0 1px 2px rgba(0, 0, 0, 0.4)"}}>
+                      <p
+                        className="text-sm md:text-base text-white/85 leading-relaxed font-light"
+                        style={{ textShadow: "0 1px 2px rgba(0, 0, 0, 0.4)" }}
+                      >
                         {selectedItem.photo.text}
                       </p>
                     )}
