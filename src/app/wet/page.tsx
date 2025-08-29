@@ -12,7 +12,7 @@ import {
 
 const galleryData: GalleryItem[] = [
   {
-    common: "Sweats",
+    common: "Sweatpants",
     binomial: "",
     price: 169,
     photo: {
@@ -78,7 +78,7 @@ const galleryData: GalleryItem[] = [
     },
   },
   {
-    common: "Sweats",
+    common: "Sweatpants",
     binomial: "",
     price: 169,
     photo: {

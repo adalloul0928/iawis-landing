@@ -199,7 +199,7 @@ export function ExpandedGallery({
                         <>
                           <span className="text-white/70 flex-shrink-0">•</span>
                           <p
-                            className="text-sm text-white/85 font-light truncate"
+                            className="text-sm text-white/85 font-semibold truncate"
                             style={{
                               textShadow: "0 1px 2px rgba(0, 0, 0, 0.4)",
                             }}
@@ -238,7 +238,7 @@ export function ExpandedGallery({
                     {/* Description */}
                     {selectedItem.photo.text && (
                       <p
-                        className="text-sm md:text-base text-white/85 leading-relaxed font-light"
+                        className="text-sm md:text-base text-white/85 leading-relaxed font-normal"
                         style={{ textShadow: "0 1px 2px rgba(0, 0, 0, 0.4)" }}
                       >
                         {selectedItem.photo.text}
