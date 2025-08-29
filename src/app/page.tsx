@@ -24,6 +24,10 @@ export default function Home() {
     setIsTransitioning(true);
   };
 
+  const handleUnlockClothes = () => {
+    setIsTransitioning(true);
+  };
+
   const handleTransitionComplete = () => {
     router.push(`/wet`);
   };
@@ -68,7 +72,7 @@ export default function Home() {
 
       {/* Waitlist Form at Bottom Center */}
       <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 px-4 sm:bottom-16 pb-safe-enhanced">
-        <WaitlistForm />
+        <WaitlistForm onUnlockClothes={handleUnlockClothes} />
       </div>
 
       {/* Screen Transition Overlay */}
