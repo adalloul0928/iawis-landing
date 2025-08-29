@@ -531,6 +531,11 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+  
+  /* Radial gradient utility */
+  .bg-gradient-radial {
+    background: radial-gradient(circle, var(--tw-gradient-stops));
+  }
 }
 
 /* Custom scrollbar for webkit browsers */

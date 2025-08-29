@@ -8,7 +8,7 @@ import {
   CircularGallery,
   type GalleryItem,
 } from "@/components/ui/circular-gallery2";
-import ExpandedGallery from "@/components/ui/circular-gallery-expand";
+import { ExpandedGallery } from "@/components/ui/circular-gallery-expand";
 
 const galleryData: GalleryItem[] = [
   {
@@ -145,7 +145,7 @@ const galleryData: GalleryItem[] = [
     common: "Scarf",
     binomial: "",
     photo: {
-      url: "/closeup/F97E7E43-49FA-412A-A201-24EB3820B84D.jpeg",
+      url: "/closeup/F97C7E43-49FA-412A-A201-24EB3820B84C.jpeg",
       text: "warm winter accessory",
       pos: "center",
       by: "Photographer",
@@ -264,19 +264,59 @@ const CircularGalleryDemo = () => {
     // This outer container provides the fixed height
     <div
       className="w-full bg-black text-foreground relative overflow-hidden"
-      style={{ 
+      style={{
         height: "100dvh",
         // Fallback for older browsers that don't support dvh
         minHeight: "100vh",
       }}
     >
+      {/* Gradient backdrop */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900/40 via-black to-slate-800/30" />
+
+      {/* Large radial glow underneath carousel */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200vw] h-[200vh]">
+        {/* Main glow */}
+        <div className="absolute inset-0 bg-gradient-radial from-white/[0.08] via-white/[0.03] to-transparent rounded-full blur-3xl" />
+        {/* Blue accent glow */}
+        <div
+          className="absolute inset-0 bg-gradient-radial from-blue-400/[0.06] via-blue-600/[0.02] to-transparent rounded-full blur-2xl animate-pulse"
+          style={{ animationDuration: "3s" }}
+        />
+        {/* Purple accent */}
+        <div
+          className="absolute inset-0 bg-gradient-radial from-purple-500/[0.03] via-transparent to-transparent rounded-full blur-xl animate-pulse"
+          style={{ animationDuration: "4s", animationDelay: "1s" }}
+        />
+      </div>
+
+      {/* Apple-like noise texture */}
+      <div className="absolute inset-0 opacity-[0.03]">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.1) 0%, transparent 1%), radial-gradient(circle at 25% 25%, rgba(255,255,255,0.05) 0%, transparent 2%), radial-gradient(circle at 75% 75%, rgba(255,255,255,0.08) 0%, transparent 1.5%)",
+            backgroundSize: "3px 3px, 7px 7px, 5px 5px",
+          }}
+        />
+      </div>
+
       {/* This inner container contains the gallery */}
-      <div className="w-full h-full flex flex-col items-center justify-center overflow-hidden">
+      <div className="w-full h-full flex flex-col items-center justify-center overflow-hidden relative z-10">
         <div className="absolute top-16 2xl:top-12 left-1/2 -translate-x-1/2 z-10">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
-            animate={animationPhase === "complete" ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.8, type: "spring", bounce: 0.3, delay: 0.2 }}
+            animate={
+              animationPhase === "complete"
+                ? { opacity: 1, scale: 1 }
+                : { opacity: 0, scale: 0.8 }
+            }
+            transition={{
+              duration: 0.8,
+              type: "spring",
+              bounce: 0.3,
+              delay: 0.2,
+            }}
           >
             <Link
               href="/"
@@ -288,6 +328,7 @@ const CircularGalleryDemo = () => {
                 width={600}
                 height={144}
                 className="h-32 sm:h-24 md:h-28 lg:h-32 xl:h-36 w-auto"
+                priority={true}
               />
             </Link>
           </motion.div>

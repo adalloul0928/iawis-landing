@@ -70,7 +70,14 @@ export function ExpandedGallery({
             damping: 30,
           }}
         >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            aria-hidden="true"
+            role="img"
+          >
             <path d="M12.728 3.272a1 1 0 0 0-1.414 0L8 6.586 4.686 3.272a1 1 0 1 0-1.414 1.414L6.586 8l-3.314 3.314a1 1 0 0 0 1.414 1.414L8 9.414l3.314 3.314a1 1 0 0 0 1.414-1.414L9.414 8l3.314-3.314a1 1 0 0 0 0-1.414z" />
           </svg>
         </motion.button>
@@ -151,19 +158,26 @@ export function ExpandedGallery({
           </div>
         </motion.div>
 
-        {/* Instruction */}
-        {/* <motion.div
-          className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 text-white/50 text-sm"
+        {/* Mobile swipe instruction */}
+        <motion.div
+          className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 text-white/50 text-sm md:hidden"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.5 }}
         >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M8 15a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            aria-hidden="true"
+            role="img"
+          >
+            <path d="M8 15a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
           </svg>
-          <span>Click outside or press ESC to close</span>
-        </motion.div> */}
+          <span>Swipe down to close</span>
+        </motion.div>
       </motion.div>
     </AnimatePresence>,
     document.body,

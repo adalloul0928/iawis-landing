@@ -50,18 +50,20 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
     const [rotation, setRotation] = useState(0);
     const [isScrolling, setIsScrolling] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
-    const [isPointerDown, setIsPointerDown] = useState(false);
+    const [isTouchActive, setIsTouchActive] = useState(false);
     const [velocity, setVelocity] = useState(0);
     const [isMomentum, setIsMomentum] = useState(false);
     const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const animationFrameRef = useRef<number | null>(null);
     const momentumFrameRef = useRef<number | null>(null);
-    const lastPointerXRef = useRef(0);
-    const pointerDownXRef = useRef(0);
-    const lastMoveTimeRef = useRef(0);
+    const touchStartXRef = useRef(0);
+    const touchStartYRef = useRef(0);
+    const lastTouchXRef = useRef(0);
+    const lastTouchTimeRef = useRef(0);
     const velocityHistoryRef = useRef<number[]>([]);
     const containerRef = useRef<HTMLDivElement>(null);
-    const DRAG_THRESHOLD = 5; // pixels
+    const DRAG_THRESHOLD = 10; // pixels
+    const SWIPE_THRESHOLD = 50; // pixels
 
     // Effect to handle infinite wheel-based rotation
     useEffect(() => {
@@ -103,43 +105,53 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
       };
     }, []);
 
-    // Drag event handlers
-    const handlePointerDown = (e: React.PointerEvent) => {
-      console.log("Container pointer down");
-      setIsPointerDown(true);
-      lastPointerXRef.current = e.clientX;
-      pointerDownXRef.current = e.clientX;
-      // Temporarily remove pointer capture to test if it's interfering
-      // if (containerRef.current) {
-      //   containerRef.current.setPointerCapture(e.pointerId);
-      // }
+    // Improved touch event handlers for mobile
+    const handleTouchStart = (e: React.TouchEvent) => {
+      if (e.touches.length !== 1) return; // Only handle single touch
+
+      const touch = e.touches[0];
+      touchStartXRef.current = touch.clientX;
+      touchStartYRef.current = touch.clientY;
+      lastTouchXRef.current = touch.clientX;
+      lastTouchTimeRef.current = Date.now();
+      setIsTouchActive(true);
+      setIsMomentum(false);
+      setVelocity(0);
+      velocityHistoryRef.current = [];
     };
 
-    const handlePointerMove = (e: React.PointerEvent) => {
-      if (!isPointerDown) return;
+    const handleTouchMove = (e: React.TouchEvent) => {
+      if (!isTouchActive || e.touches.length !== 1) return;
 
-      const currentX = e.clientX;
+      const touch = e.touches[0];
+      const currentX = touch.clientX;
+      const currentY = touch.clientY;
       const currentTime = Date.now();
-      const totalDragDistance = Math.abs(currentX - pointerDownXRef.current);
 
-      // Only start dragging if we've moved beyond the threshold
-      if (totalDragDistance > DRAG_THRESHOLD && !isDragging) {
+      // Calculate total movement from start
+      const totalDeltaX = Math.abs(currentX - touchStartXRef.current);
+      const totalDeltaY = Math.abs(currentY - touchStartYRef.current);
+
+      // Only start dragging if horizontal movement is greater than vertical (and beyond threshold)
+      if (
+        totalDeltaX > DRAG_THRESHOLD &&
+        totalDeltaX > totalDeltaY &&
+        !isDragging
+      ) {
         setIsDragging(true);
-        lastMoveTimeRef.current = currentTime;
       }
 
       if (isDragging) {
-        const dragDelta = currentX - lastPointerXRef.current;
-        const timeDelta = currentTime - lastMoveTimeRef.current;
+        const deltaX = currentX - lastTouchXRef.current;
+        const timeDelta = currentTime - lastTouchTimeRef.current;
 
         // Use same sensitivity as scroll (0.3) for consistent horizontal interaction
-        // Drag right = rotate right (positive), drag left = rotate left (negative)
-        const rotationDelta = dragDelta * 0.3;
+        const rotationDelta = deltaX * 0.3;
         setRotation((prev) => prev + rotationDelta);
 
         // Calculate velocity for momentum
         if (timeDelta > 0) {
-          const currentVelocity = dragDelta / timeDelta;
+          const currentVelocity = deltaX / timeDelta;
           velocityHistoryRef.current.push(currentVelocity);
           // Keep only last 5 velocity measurements
           if (velocityHistoryRef.current.length > 5) {
@@ -147,21 +159,21 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
           }
         }
 
-        lastMoveTimeRef.current = currentTime;
+        lastTouchTimeRef.current = currentTime;
       }
 
-      lastPointerXRef.current = currentX;
+      lastTouchXRef.current = currentX;
     };
 
-    const handlePointerUp = () => {
-      console.log("Container pointer up, isDragging:", isDragging);
+    const handleTouchEnd = (e: React.TouchEvent) => {
+      if (!isTouchActive) return;
 
       if (isDragging && velocityHistoryRef.current.length > 0) {
         // Calculate average velocity from recent measurements
         const avgVelocity =
           velocityHistoryRef.current.reduce((a, b) => a + b, 0) /
           velocityHistoryRef.current.length;
-        const momentumVelocity = avgVelocity * 0.3 * 5; // Reduced from 20 to 5
+        const momentumVelocity = avgVelocity * 0.3 * 8; // Increased momentum for better feel
 
         if (Math.abs(momentumVelocity) > 0.05) {
           setVelocity(momentumVelocity);
@@ -169,13 +181,7 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
         }
       }
 
-      setIsPointerDown(false);
-      setIsDragging(false);
-      velocityHistoryRef.current = [];
-    };
-
-    const handlePointerLeave = () => {
-      setIsPointerDown(false);
+      setIsTouchActive(false);
       setIsDragging(false);
       velocityHistoryRef.current = [];
     };
@@ -192,7 +198,7 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
         }
 
         setRotation((prev) => prev + velocity);
-        setVelocity((prev) => prev * 0.95); // Friction/decay
+        setVelocity((prev) => prev * 0.92); // Slightly more friction for natural feel
 
         momentumFrameRef.current = requestAnimationFrame(animateMomentum);
       };
@@ -206,7 +212,7 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
       };
     }, [isMomentum, velocity]);
 
-    // Effect for auto-rotation when not scrolling or dragging (throttled to ~20fps)
+    // Effect for auto-rotation when not scrolling or dragging (throttled to ~120fps)
     useEffect(() => {
       let lastTime = 0;
       const targetFPS = 120;
@@ -214,7 +220,7 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
 
       const autoRotate = (currentTime: number) => {
         if (currentTime - lastTime >= frameInterval) {
-          if (!isScrolling && !isDragging && !isPointerDown && !isMomentum) {
+          if (!isScrolling && !isDragging && !isTouchActive && !isMomentum) {
             setRotation((prev) => prev + autoRotateSpeed * (targetFPS / 60));
           }
           lastTime = currentTime;
@@ -229,7 +235,7 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
           cancelAnimationFrame(animationFrameRef.current);
         }
       };
-    }, [isScrolling, isDragging, isPointerDown, isMomentum, autoRotateSpeed]);
+    }, [isScrolling, isDragging, isTouchActive, isMomentum, autoRotateSpeed]);
 
     const anglePerItem = 360 / items.length;
 
@@ -243,11 +249,14 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
           isDragging ? "cursor-grabbing" : "cursor-grab",
           className,
         )}
-        style={{ perspective: "2000px", touchAction: "pan-y pinch-zoom" }}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerLeave={handlePointerLeave}
+        style={{
+          perspective: "2000px",
+          touchAction: "pan-y pinch-zoom",
+          WebkitOverflowScrolling: "touch", // Enable momentum scrolling on iOS
+        }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         {...props}
       >
         <div
@@ -255,6 +264,7 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
           style={{
             transform: `rotateY(${rotation}deg)`,
             transformStyle: "preserve-3d",
+            willChange: "transform", // Optimize for animations
           }}
         >
           {items.map((item, i) => {
@@ -306,8 +316,8 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                     fill
                     className="object-cover select-none"
                     style={{ objectPosition: item.photo.pos || "center" }}
-                    loading="eager"
                     priority={true}
+                    loading="eager"
                     sizes="600px"
                     quality={95}
                     draggable={false}
