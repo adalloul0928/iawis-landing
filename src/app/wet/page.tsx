@@ -209,7 +209,6 @@ const CircularGalleryDemo = () => {
   }, []);
 
   const handleItemClick = useCallback((item: GalleryItem, index: number) => {
-    console.log("Item clicked:", item.common);
     setSelectedItem(item);
     setSelectedIndex(index);
   }, []);

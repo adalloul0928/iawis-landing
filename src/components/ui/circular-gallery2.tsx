@@ -389,7 +389,6 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                 onClick={(e) => {
                   e.stopPropagation();
                   if (!isDragging) {
-                    console.log("Calling onItemClick for:", item.common);
                     onItemClick?.(item, i);
                   }
                 }}
