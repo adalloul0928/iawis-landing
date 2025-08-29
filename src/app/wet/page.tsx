@@ -261,13 +261,17 @@ const CircularGalleryDemo = () => {
   };
 
   return (
-    // This outer container provides the scrollable height
+    // This outer container provides the fixed height
     <div
-      className="w-full bg-black text-foreground relative"
-      style={{ height: "100vh" }}
+      className="w-full bg-black text-foreground relative overflow-hidden"
+      style={{ 
+        height: "100dvh",
+        // Fallback for older browsers that don't support dvh
+        minHeight: "100vh",
+      }}
     >
-      {/* This inner container sticks to the top while scrolling */}
-      <div className="w-full h-screen sticky top-0 flex flex-col items-center justify-center overflow-hidden">
+      {/* This inner container contains the gallery */}
+      <div className="w-full h-full flex flex-col items-center justify-center overflow-hidden">
         <div className="absolute top-16 2xl:top-12 left-1/2 -translate-x-1/2 z-10">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}

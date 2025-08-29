@@ -306,8 +306,8 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                     fill
                     className="object-cover select-none"
                     style={{ objectPosition: item.photo.pos || "center" }}
-                    loading={i < 4 ? "eager" : "lazy"}
-                    priority={i < 4}
+                    loading="eager"
+                    priority={true}
                     sizes="600px"
                     quality={95}
                     draggable={false}

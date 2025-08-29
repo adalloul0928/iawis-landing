@@ -99,7 +99,9 @@ export function ExpandedGallery({
                   className="w-full h-auto object-cover max-h-[60vh] rounded-t-2xl"
                   draggable={false}
                   quality={95}
-                  priority
+                  priority={true}
+                  loading="eager"
+                  sizes="(max-width: 768px) 85vw, 800px"
                 />
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />

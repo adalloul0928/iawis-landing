@@ -119,6 +119,22 @@
   html, body {
     @apply bg-black text-foreground;
   }
+  
+  /* Prevent vertical scrolling on mobile */
+  @media screen and (max-width: 768px) {
+    html, body {
+      overflow-x: hidden;
+      overflow-y: hidden;
+      height: 100dvh;
+      touch-action: manipulation;
+    }
+    
+    /* Prevent rubber band scrolling on iOS */
+    body {
+      position: fixed;
+      width: 100%;
+    }
+  }
 }
 
 @keyframes spin {

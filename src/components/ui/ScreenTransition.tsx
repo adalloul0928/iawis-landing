@@ -40,17 +40,17 @@ export default function ScreenTransition({
       // Phase 1: Start animation
       const startTimer = setTimeout(() => {
         setAnimationPhase("middle");
-      }, 150);
+      }, 50);
 
       // Phase 2: Middle of animation
       const middleTimer = setTimeout(() => {
         setAnimationPhase("end");
-      }, 400);
+      }, 200);
 
       // Phase 3: Complete and navigate
       const completeTimer = setTimeout(() => {
         onComplete();
-      }, 600);
+      }, 300);
 
       return () => {
         clearTimeout(startTimer);
