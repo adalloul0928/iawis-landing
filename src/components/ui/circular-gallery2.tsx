@@ -375,13 +375,15 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                 style={{
                   width: `${cardWidth}px`,
                   height: `${cardHeight}px`,
-                  transform: `rotateY(${itemAngle}deg) translateZ(${radius}px)`,
+                  transform: `rotateY(${itemAngle}deg) translate3d(0, 0, ${radius}px)`,
                   left: "50%",
                   top: "50%",
                   marginLeft: `-${cardWidth / 2}px`,
                   marginTop: `-${cardHeight / 2}px`,
                   opacity: opacity,
-                  transition: "opacity 0.3s linear",
+                  willChange: "opacity, transform",
+                  WebkitBackfaceVisibility: "hidden",
+                  backfaceVisibility: "hidden",
                   pointerEvents: isDragging || isMomentum ? "none" : "auto",
                 }}
                 onClick={(e) => {
