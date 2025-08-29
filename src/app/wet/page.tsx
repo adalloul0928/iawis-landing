@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
+import { ExpandedGallery } from "@/components/ui/circular-gallery-expand";
 import {
   CircularGallery,
   type GalleryItem,
 } from "@/components/ui/circular-gallery2";
-import { ExpandedGallery } from "@/components/ui/circular-gallery-expand";
 
 const galleryData: GalleryItem[] = [
   {
@@ -16,7 +16,87 @@ const galleryData: GalleryItem[] = [
     binomial: "",
     photo: {
       url: "/full/00D548B5-6138-406E-98AD-C7D0CC99F8C1.jpeg",
-      text: "cozy oversized fit",
+      text: "Orca Black",
+      pos: "center",
+      by: "Photographer",
+    },
+  },
+  {
+    common: "Crewneck",
+    binomial: "",
+    photo: {
+      url: "/closeup/322F338C-8091-4284-A730-DB5503813C21.jpeg",
+      text: "Lake Union Blue",
+      pos: "center",
+      by: "Photographer",
+    },
+  },
+  {
+    common: "Crewneck",
+    binomial: "",
+    photo: {
+      url: "/full/399CC86C-055F-4E28-87C4-882F4BA47C17.jpeg",
+      text: "Lake Union Blue",
+      pos: "center",
+      by: "Photographer",
+    },
+  },
+  {
+    common: "Hoodie",
+    binomial: "",
+    photo: {
+      url: "/closeup/3CE40DCD-98CB-4382-9774-17E8EA63637C.jpeg",
+      text: "Lake Union Blue",
+      pos: "center",
+      by: "Photographer",
+    },
+  },
+  {
+    common: "Crewneck",
+    binomial: "",
+    photo: {
+      url: "/full/423D6ADB-0510-491C-95EC-F853403AA04B.jpeg",
+      text: "Orca Black",
+      pos: "center",
+      by: "Photographer",
+    },
+  },
+  {
+    common: "Hoodie",
+    binomial: "",
+    photo: {
+      url: "/closeup/A11347CA-89CA-437D-85F8-32E984FA34C9.jpeg",
+      text: "Lake Union Blue",
+      pos: "center",
+      by: "Photographer",
+    },
+  },
+  {
+    common: "Sweats",
+    binomial: "",
+    photo: {
+      url: "/full/59C35064-0CE6-4664-AD98-39DF4DCDA78F.jpeg",
+      text: "Lake Union Blue",
+      pos: "center",
+      by: "Photographer",
+    },
+  },
+  {
+    common: "Hoodie",
+    binomial: "",
+    photo: {
+      url: "/closeup/DACCFE4A-9450-4255-B5A7-06E7BAEA2A41.jpeg",
+      text: "Orca Black",
+      pos: "center",
+      by: "Photographer",
+    },
+  },
+  {
+    common: "Crewneck",
+    binomial: "",
+    photo: {
+      url: "/full/59E311A3-103A-4F1E-9BB5-6EC119CD2555.jpeg",
+      text: "Orca Black",
       pos: "center",
       by: "Photographer",
     },
@@ -25,128 +105,48 @@ const galleryData: GalleryItem[] = [
     common: "Beanie",
     binomial: "",
     photo: {
-      url: "/closeup/322F338C-8091-4284-A730-DB5503813C21.jpeg",
-      text: "soft knit wool",
-      pos: "center",
-      by: "Photographer",
-    },
-  },
-  {
-    common: "Sweatshirt",
-    binomial: "",
-    photo: {
-      url: "/full/399CC86C-055F-4E28-87C4-882F4BA47C17.jpeg",
-      text: "classic cotton blend",
-      pos: "center",
-      by: "Photographer",
-    },
-  },
-  {
-    common: "Cap",
-    binomial: "",
-    photo: {
-      url: "/closeup/3CE40DCD-98CB-4382-9774-17E8EA63637C.jpeg",
-      text: "adjustable snapback",
-      pos: "center",
-      by: "Photographer",
-    },
-  },
-  {
-    common: "Sweater",
-    binomial: "",
-    photo: {
-      url: "/full/423D6ADB-0510-491C-95EC-F853403AA04B.jpeg",
-      text: "extra soft merino",
-      pos: "center",
-      by: "Photographer",
-    },
-  },
-  {
-    common: "T-Shirt",
-    binomial: "",
-    photo: {
-      url: "/closeup/A11347CA-89CA-437D-85F8-32E984FA34C9.jpeg",
-      text: "premium organic cotton",
-      pos: "center",
-      by: "Photographer",
-    },
-  },
-  {
-    common: "Joggers",
-    binomial: "",
-    photo: {
-      url: "/full/59C35064-0CE6-4664-AD98-39DF4DCDA78F.jpeg",
-      text: "tapered athletic fit",
-      pos: "center",
-      by: "Photographer",
-    },
-  },
-  {
-    common: "Socks",
-    binomial: "",
-    photo: {
-      url: "/closeup/DACCFE4A-9450-4255-B5A7-06E7BAEA2A41.jpeg",
-      text: "moisture wicking fabric",
-      pos: "center",
-      by: "Photographer",
-    },
-  },
-  {
-    common: "Jacket",
-    binomial: "",
-    photo: {
-      url: "/full/59E311A3-103A-4F1E-9BB5-6EC119CD2555.jpeg",
-      text: "water resistant shell",
-      pos: "center",
-      by: "Photographer",
-    },
-  },
-  {
-    common: "Polo",
-    binomial: "",
-    photo: {
       url: "/closeup/EB1E3784-7462-4A22-92C3-B17B3508EC3A.jpeg",
-      text: "breathable mesh collar",
+      text: "Cascade White",
       pos: "center",
       by: "Photographer",
     },
   },
   {
-    common: "Sweatpants",
+    common: "Hoodie",
     binomial: "",
     photo: {
       url: "/full/79274065-27DC-448F-907B-FA195C43F190.jpeg",
-      text: "relaxed comfort fit",
+      text: "Lake Union Blue",
       pos: "center",
       by: "Photographer",
     },
   },
   {
-    common: "Tank Top",
+    common: "Beanie",
     binomial: "",
     photo: {
       url: "/closeup/F3C63B3E-785D-4993-A15E-EC658CCE07E1.jpeg",
-      text: "lightweight summer wear",
+      text: "Orca Black",
       pos: "center",
       by: "Photographer",
     },
   },
   {
-    common: "Cardigan",
+    common: "Hoodie",
     binomial: "",
     photo: {
       url: "/full/A420B97A-E5F2-43EC-A792-37C5E35F91BC.jpeg",
-      text: "button-up layering piece",
+      text: "Lake Union Blue",
       pos: "center",
       by: "Photographer",
     },
   },
   {
-    common: "Scarf",
+    common: "Hoodie",
     binomial: "",
     photo: {
       url: "/closeup/F97E7E43-49FA-412A-A201-24EB3820B84D.jpeg",
-      text: "warm winter accessory",
+      text: "Orca Black",
       pos: "center",
       by: "Photographer",
     },
@@ -213,7 +213,7 @@ const CircularGalleryDemo = () => {
         const progress = Math.min(elapsed / duration, 1);
 
         // Use easing function for smooth deceleration
-        const easedProgress = 1 - Math.pow(1 - progress, 3);
+        const easedProgress = 1 - (1 - progress) ** 3;
 
         setAnimationProgress(easedProgress);
 
