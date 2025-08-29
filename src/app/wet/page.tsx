@@ -188,14 +188,18 @@ const CircularGalleryDemo = () => {
       const width = window.innerWidth;
       if (width >= 1536) {
         setDimensions({ radius: 900, cardWidth: 350, cardHeight: 437.5 });
+      } else if (width >= 1440) {
+        setDimensions({ radius: 750, cardWidth: 290, cardHeight: 355 });
       } else if (width >= 1280) {
         setDimensions({ radius: 800, cardWidth: 325, cardHeight: 405 });
       } else if (width >= 1024) {
         setDimensions({ radius: 700, cardWidth: 260, cardHeight: 340 });
       } else if (width >= 640) {
         setDimensions({ radius: 650, cardWidth: 240, cardHeight: 320 });
-      } else {
+      } else if (width >= 375) {
         setDimensions({ radius: 550, cardWidth: 200, cardHeight: 250 });
+      } else {
+        setDimensions({ radius: 450, cardWidth: 160, cardHeight: 200 });
       }
     };
 
@@ -218,6 +222,9 @@ const CircularGalleryDemo = () => {
     setSelectedIndex(index);
     setSelectedItem(galleryData[index]);
   }, []);
+
+  // Calculate dynamic logo position - position at 20% of space above carousel for better visual balance
+  const logoTopPosition = `calc((50vh - ${dimensions.cardHeight / 2}px) * 0.15)`;
 
   // Start animation when page loads
   useEffect(() => {
@@ -324,7 +331,10 @@ const CircularGalleryDemo = () => {
 
       {/* This inner container contains the gallery */}
       <div className="w-full h-full flex flex-col items-center justify-center overflow-hidden relative z-10">
-        <div className="absolute top-16 2xl:top-12 left-1/2 -translate-x-1/2 z-10">
+        <div
+          className="absolute left-1/2 -translate-x-1/2 z-10"
+          style={{ top: logoTopPosition }}
+        >
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={
@@ -348,7 +358,7 @@ const CircularGalleryDemo = () => {
                 alt="Always Wet Logo"
                 width={600}
                 height={144}
-                className="h-32 sm:h-24 md:h-28 lg:h-32 xl:h-36 w-auto"
+                className="h-20 [@media(min-width:375px)]:h-32 sm:h-24 md:h-28 lg:h-32 xl:h-36 w-auto"
                 priority={true}
               />
             </Link>
