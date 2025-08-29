@@ -268,7 +268,7 @@ const CircularGalleryDemo = () => {
     >
       {/* This inner container sticks to the top while scrolling */}
       <div className="w-full h-screen sticky top-0 flex flex-col items-center justify-center overflow-hidden">
-        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-10">
+        <div className="absolute top-16 2xl:top-12 left-1/2 -translate-x-1/2 z-10">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={animationPhase === "complete" ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}

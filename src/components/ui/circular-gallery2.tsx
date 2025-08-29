@@ -65,21 +65,19 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
 
     // Effect to handle infinite wheel-based rotation
     useEffect(() => {
-      // Handle wheel events for both horizontal and vertical scrolling (infinite rotation)
+      // Handle wheel events for horizontal scrolling only (infinite rotation)
       const handleWheel = (e: WheelEvent) => {
-        // Handle both horizontal (deltaX) and vertical (deltaY) scroll for infinite rotation
-        if (Math.abs(e.deltaX) > 0 || Math.abs(e.deltaY) > 0) {
-          e.preventDefault(); // Prevent default scroll behavior
+        // Handle only horizontal (deltaX) scroll for rotation
+        if (Math.abs(e.deltaX) > 0) {
+          e.preventDefault(); // Prevent default horizontal scroll behavior
 
           setIsScrolling(true);
           if (scrollTimeoutRef.current) {
             clearTimeout(scrollTimeoutRef.current);
           }
 
-          // Combine both horizontal and vertical scroll deltas
-          // For vertical: scroll down = rotate right (positive), scroll up = rotate left (negative)
-          // For horizontal: scroll right = rotate left (negative), scroll left = rotate right (positive)
-          const rotationDelta = e.deltaY * 0.3 + -e.deltaX * 0.3;
+          // For horizontal: scroll right = rotate right (positive), scroll left = rotate left (negative)
+          const rotationDelta = e.deltaX * 0.3;
           setRotation((prev) => prev + rotationDelta);
 
           scrollTimeoutRef.current = setTimeout(() => {
@@ -134,9 +132,9 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
         const dragDelta = currentX - lastPointerXRef.current;
         const timeDelta = currentTime - lastMoveTimeRef.current;
 
-        // Use same sensitivity as scroll (0.3) but invert for natural horizontal interaction
-        // Drag right = rotate left (negative), drag left = rotate right (positive)
-        const rotationDelta = -dragDelta * 0.3;
+        // Use same sensitivity as scroll (0.3) for consistent horizontal interaction
+        // Drag right = rotate right (positive), drag left = rotate left (negative)
+        const rotationDelta = dragDelta * 0.3;
         setRotation((prev) => prev + rotationDelta);
 
         // Calculate velocity for momentum
@@ -163,7 +161,7 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
         const avgVelocity =
           velocityHistoryRef.current.reduce((a, b) => a + b, 0) /
           velocityHistoryRef.current.length;
-        const momentumVelocity = -avgVelocity * 0.3 * 5; // Reduced from 20 to 5
+        const momentumVelocity = avgVelocity * 0.3 * 5; // Reduced from 20 to 5
 
         if (Math.abs(momentumVelocity) > 0.05) {
           setVelocity(momentumVelocity);
