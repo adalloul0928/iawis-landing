@@ -10,6 +10,7 @@ const cn = (...classes: (string | undefined | null | false)[]) => {
 export interface GalleryItem {
   common: string;
   binomial: string;
+  price: number;
   photo: {
     url: string;
     text: string;

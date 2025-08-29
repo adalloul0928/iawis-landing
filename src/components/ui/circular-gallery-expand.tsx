@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
 import Image from "next/image";
@@ -21,6 +21,18 @@ export function ExpandedGallery({
   onClose,
   onNavigate,
 }: ExpandedGalleryProps) {
+  const [isLandscape, setIsLandscape] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
   useEffect(() => {
     if (!selectedItem) return;
 
@@ -142,15 +154,21 @@ export function ExpandedGallery({
                   priority={true}
                   loading="eager"
                   sizes="(max-width: 768px) 85vw, 800px"
+                  onLoad={(e) => {
+                    const img = e.target as HTMLImageElement;
+                    setIsLandscape(img.naturalWidth > img.naturalHeight);
+                  }}
                 />
               </div>
 
               {/* Subtle gradient for text contrast */}
               <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
 
-              {/* Glass overlay for text */}
+              {/* Glass overlay for text - conditional layout */}
               <motion.div
-                className="absolute bottom-0 left-0 right-0 m-4 p-5 rounded-2xl"
+                className={`absolute bottom-0 left-0 right-0 rounded-2xl ${
+                  isLandscape && isMobile ? "m-3 p-3" : isMobile ? "m-3 p-4" : "m-4 p-5"
+                }`}
                 style={{
                   background: "rgba(255, 255, 255, 0.01)",
                   backdropFilter: "blur(15px)",
@@ -167,24 +185,47 @@ export function ExpandedGallery({
                   damping: 30,
                 }}
               >
-                <div className="space-y-2">
-                  {/* Title and Price Row */}
-                  <div className="flex items-center justify-between gap-4">
-                    <h2 className="text-xl md:text-2xl font-medium text-white/95 tracking-tight">
-                      {selectedItem.common}
-                    </h2>
-                    <div className="text-xl md:text-2xl font-medium text-white/95">
-                      $69.69
+                {isLandscape && isMobile ? (
+                  /* Compact single-line layout for landscape images */
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 min-w-0 flex-1">
+                      <h2 className="text-lg md:text-xl font-medium text-white/95 tracking-tight flex-shrink-0">
+                        {selectedItem.common}
+                      </h2>
+                      {selectedItem.photo.text && (
+                        <>
+                          <span className="text-white/60 flex-shrink-0">•</span>
+                          <p className="text-sm md:text-base text-white/80 font-light truncate">
+                            {selectedItem.photo.text}
+                          </p>
+                        </>
+                      )}
+                    </div>
+                    <div className="text-lg md:text-xl font-medium text-white/95 flex-shrink-0">
+                      ${selectedItem.price}
                     </div>
                   </div>
+                ) : (
+                  /* Two-line layout for portrait images */
+                  <div className="space-y-2">
+                    {/* Title and Price Row */}
+                    <div className="flex items-center justify-between gap-4">
+                      <h2 className="text-xl md:text-2xl font-medium text-white/95 tracking-tight">
+                        {selectedItem.common}
+                      </h2>
+                      <div className="text-xl md:text-2xl font-medium text-white/95">
+                        ${selectedItem.price}
+                      </div>
+                    </div>
 
-                  {/* Description */}
-                  {selectedItem.photo.text && (
-                    <p className="text-sm md:text-base text-white/80 leading-relaxed font-light">
-                      {selectedItem.photo.text}
-                    </p>
-                  )}
-                </div>
+                    {/* Description */}
+                    {selectedItem.photo.text && (
+                      <p className="text-sm md:text-base text-white/80 leading-relaxed font-light">
+                        {selectedItem.photo.text}
+                      </p>
+                    )}
+                  </div>
+                )}
               </motion.div>
             </div>
           </div>
