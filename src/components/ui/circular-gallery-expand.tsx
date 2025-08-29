@@ -170,11 +170,11 @@ export function ExpandedGallery({
                   isLandscape && isMobile ? "m-3 p-3" : isMobile ? "m-3 p-4" : "m-4 p-5"
                 }`}
                 style={{
-                  background: "rgba(255, 255, 255, 0.01)",
-                  backdropFilter: "blur(15px)",
-                  WebkitBackdropFilter: "blur(15px)",
-                  border: "1px solid rgba(255, 255, 255, 0.02)",
-                  boxShadow: "0 4px 16px rgba(0, 0, 0, 0.02)",
+                  background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))",
+                  backdropFilter: "blur(20px) saturate(180%)",
+                  WebkitBackdropFilter: "blur(20px) saturate(180%)",
+                  border: "1px solid rgba(255, 255, 255, 0.18)",
+                  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.25)",
                 }}
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -189,19 +189,19 @@ export function ExpandedGallery({
                   /* Compact single-line layout for landscape images */
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2 min-w-0 flex-1">
-                      <h2 className="text-lg md:text-xl font-medium text-white/95 tracking-tight flex-shrink-0">
+                      <h2 className="text-lg md:text-xl font-medium text-white/95 tracking-tight flex-shrink-0" style={{textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)"}}>
                         {selectedItem.common}
                       </h2>
                       {selectedItem.photo.text && (
                         <>
-                          <span className="text-white/60 flex-shrink-0">•</span>
-                          <p className="text-sm md:text-base text-white/80 font-light truncate">
+                          <span className="text-white/70 flex-shrink-0">•</span>
+                          <p className="text-sm md:text-base text-white/85 font-light truncate" style={{textShadow: "0 1px 2px rgba(0, 0, 0, 0.4)"}}>
                             {selectedItem.photo.text}
                           </p>
                         </>
                       )}
                     </div>
-                    <div className="text-lg md:text-xl font-medium text-white/95 flex-shrink-0">
+                    <div className="text-lg md:text-xl font-medium text-white/95 flex-shrink-0" style={{textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)"}}>
                       ${selectedItem.price}
                     </div>
                   </div>
@@ -210,17 +210,17 @@ export function ExpandedGallery({
                   <div className="space-y-2">
                     {/* Title and Price Row */}
                     <div className="flex items-center justify-between gap-4">
-                      <h2 className="text-xl md:text-2xl font-medium text-white/95 tracking-tight">
+                      <h2 className="text-xl md:text-2xl font-medium text-white/95 tracking-tight" style={{textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)"}}>
                         {selectedItem.common}
                       </h2>
-                      <div className="text-xl md:text-2xl font-medium text-white/95">
+                      <div className="text-xl md:text-2xl font-medium text-white/95" style={{textShadow: "0 1px 2px rgba(0, 0, 0, 0.5)"}}>
                         ${selectedItem.price}
                       </div>
                     </div>
 
                     {/* Description */}
                     {selectedItem.photo.text && (
-                      <p className="text-sm md:text-base text-white/80 leading-relaxed font-light">
+                      <p className="text-sm md:text-base text-white/85 leading-relaxed font-light" style={{textShadow: "0 1px 2px rgba(0, 0, 0, 0.4)"}}>
                         {selectedItem.photo.text}
                       </p>
                     )}
