@@ -145,7 +145,7 @@ const galleryData: GalleryItem[] = [
     common: "Scarf",
     binomial: "",
     photo: {
-      url: "/closeup/F97C7E43-49FA-412A-A201-24EB3820B84C.jpeg",
+      url: "/closeup/F97E7E43-49FA-412A-A201-24EB3820B84D.jpeg",
       text: "warm winter accessory",
       pos: "center",
       by: "Photographer",

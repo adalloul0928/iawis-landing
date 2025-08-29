@@ -118,10 +118,7 @@ export function ExpandedGallery({
             <motion.div
               className="px-6 py-5 bg-white/[0.02] backdrop-blur-2xl"
               style={{
-                background:
-                  "linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)",
-                boxShadow:
-                  "inset 0 1px 0 rgba(255,255,255,0.1), 0 -1px 0 rgba(255,255,255,0.05)",
+                background: "rgba(255,255,255,0.02)",
                 borderTop: "1px solid rgba(255,255,255,0.08)",
               }}
               initial={{ y: 20, opacity: 0 }}
