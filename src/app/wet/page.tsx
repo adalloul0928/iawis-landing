@@ -14,7 +14,7 @@ const galleryData: GalleryItem[] = [
   {
     common: "Hoodie",
     binomial: "",
-    price: 69,
+    price: 169,
     photo: {
       url: "/full/00D548B5-6138-406E-98AD-C7D0CC99F8C1.jpeg",
       text: "Orca Black",
