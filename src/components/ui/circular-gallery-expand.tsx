@@ -47,7 +47,7 @@ export function ExpandedGallery({
       >
         {/* Backdrop */}
         <motion.div
-          className="absolute inset-0 bg-black/90 backdrop-blur-sm"
+          className="absolute inset-0 bg-black/70 backdrop-blur-sm"
           onClick={onClose}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -94,8 +94,8 @@ export function ExpandedGallery({
             damping: 25,
           }}
         >
-          <div className="bg-white/10 backdrop-blur-xl rounded-2xl overflow-hidden border border-white/20 shadow-2xl">
-            {/* Image Container */}
+          <div className="bg-white/1 backdrop-blur-xl rounded-2xl overflow-hidden border border-white/3 shadow-2xl">
+            {/* Image Container with Overlaid Text */}
             <div className="relative">
               <div className="relative w-full" style={{ aspectRatio: "auto" }}>
                 <Image
@@ -103,7 +103,7 @@ export function ExpandedGallery({
                   alt={selectedItem.photo.text}
                   width={800}
                   height={600}
-                  className="w-full h-auto object-cover max-h-[60vh] rounded-t-2xl"
+                  className="w-full h-auto object-cover max-h-[75vh] rounded-2xl"
                   draggable={false}
                   quality={95}
                   priority={true}
@@ -111,69 +111,50 @@ export function ExpandedGallery({
                   sizes="(max-width: 768px) 85vw, 800px"
                 />
               </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
-            </div>
 
-            {/* Content Panel - Apple-like design */}
-            <motion.div
-              className="px-6 py-5 bg-white/[0.02] backdrop-blur-2xl"
-              style={{
-                background: "rgba(255,255,255,0.02)",
-                borderTop: "1px solid rgba(255,255,255,0.08)",
-              }}
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{
-                delay: 0.1,
-                type: "spring",
-                stiffness: 400,
-                damping: 30,
-              }}
-            >
-              {/* Mobile layout: title/desc on left, price on right */}
-              <div className="flex items-start justify-between md:grid md:grid-cols-3 gap-4">
-                {/* Title and Description */}
-                <div className="flex-1 md:col-span-2 space-y-1">
-                  <h2 className="text-xl md:text-2xl font-medium text-white/95 tracking-tight">
-                    {selectedItem.common}
-                  </h2>
+              {/* Subtle gradient for text contrast */}
+              <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+
+              {/* Glass overlay for text */}
+              <motion.div
+                className="absolute bottom-0 left-0 right-0 m-4 p-5 rounded-2xl"
+                style={{
+                  background: "rgba(255, 255, 255, 0.01)",
+                  backdropFilter: "blur(15px)",
+                  WebkitBackdropFilter: "blur(15px)",
+                  border: "1px solid rgba(255, 255, 255, 0.02)",
+                  boxShadow: "0 4px 16px rgba(0, 0, 0, 0.02)",
+                }}
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{
+                  delay: 0.1,
+                  type: "spring",
+                  stiffness: 400,
+                  damping: 30,
+                }}
+              >
+                <div className="space-y-2">
+                  {/* Title and Price Row */}
+                  <div className="flex items-center justify-between gap-4">
+                    <h2 className="text-xl md:text-2xl font-medium text-white/95 tracking-tight">
+                      {selectedItem.common}
+                    </h2>
+                    <div className="text-xl md:text-2xl font-medium text-white/95">
+                      $69.69
+                    </div>
+                  </div>
+
+                  {/* Description */}
                   {selectedItem.photo.text && (
-                    <p className="text-sm md:text-base text-white/65 leading-relaxed font-light">
+                    <p className="text-sm md:text-base text-white/80 leading-relaxed font-light">
                       {selectedItem.photo.text}
                     </p>
                   )}
                 </div>
-
-                {/* Price - right side on mobile, separate column on desktop */}
-                <div className="flex-shrink-0 md:col-span-1 flex md:justify-center">
-                  <div className="text-xl md:text-2xl font-medium text-white/95">
-                    $69.69
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            </div>
           </div>
-        </motion.div>
-
-        {/* Mobile swipe instruction */}
-        <motion.div
-          className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 text-white/50 text-sm md:hidden"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
-        >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="currentColor"
-            aria-hidden="true"
-            role="img"
-          >
-            <path d="M8 15a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-          </svg>
-          <span>Swipe down to close</span>
         </motion.div>
       </motion.div>
     </AnimatePresence>,
