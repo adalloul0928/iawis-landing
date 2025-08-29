@@ -12,7 +12,7 @@ import {
 
 const galleryData: GalleryItem[] = [
   {
-    common: "Hoodie",
+    common: "Sweats",
     binomial: "",
     price: 169,
     photo: {

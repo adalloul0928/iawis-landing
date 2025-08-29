@@ -165,7 +165,7 @@ export function ExpandedGallery({
               {/* Glass overlay for text - conditional layout */}
               <motion.div
                 className={`absolute bottom-0 left-0 right-0 rounded-2xl ${
-                  isMobile ? "m-3 py-2 px-3" : "m-4 px-4 py-2"
+                  isMobile ? "m-2 py-2 px-3" : "m-4 px-4 py-2"
                 }`}
                 style={{
                   background:
