@@ -238,7 +238,7 @@ export function ExpandedGallery({
                     {/* Description */}
                     {selectedItem.photo.text && (
                       <p
-                        className="text-sm md:text-base text-white/85 leading-relaxed font-normal"
+                        className="text-sm md:text-base text-white/85 leading-relaxed font-semibold"
                         style={{ textShadow: "0 1px 2px rgba(0, 0, 0, 0.4)" }}
                       >
                         {selectedItem.photo.text}
