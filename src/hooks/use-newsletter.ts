@@ -19,6 +19,18 @@ export async function subscribeToNewsletter(
 ): Promise<NewsletterSubscriber> {
   const supabase = createClient();
 
+  // First, check if the email already exists
+  const { data: existingSubscriber } = await supabase
+    .from("newsletter_subscribers")
+    .select("*")
+    .eq("email", email)
+    .single();
+
+  // If email already exists, return the existing subscriber
+  if (existingSubscriber) {
+    return existingSubscriber;
+  }
+
   // Generate tokens
   const verificationToken = crypto.randomUUID();
   const unsubscribeToken = crypto.randomUUID();

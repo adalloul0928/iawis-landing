@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
-import { useRef, useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,15 +19,35 @@ import type { SubmissionState, WaitlistFormProps } from "./types";
  * Features smooth animations and form validation
  * Responsive design with mobile-optimized dimensions
  */
-export function WaitlistForm({ className, onUnlockClothes }: WaitlistFormProps) {
+export function WaitlistForm({
+  className,
+  onUnlockClothes,
+}: WaitlistFormProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [submissionState, setSubmissionState] =
     useState<SubmissionState>("input");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
-  const [showUnlockButton, setShowUnlockButton] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [mobileExpandedWidth, setMobileExpandedWidth] = useState("400px");
   const wasExpandedRef = useRef(false);
-  
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      const isDesktopSize = window.innerWidth >= 640;
+      setIsDesktop(isDesktopSize);
+
+      if (!isDesktopSize) {
+        // Calculate mobile width: viewport width minus padding (32px total: 16px each side)
+        const calculatedWidth = `${window.innerWidth - 32}px`;
+        setMobileExpandedWidth(calculatedWidth);
+      }
+    };
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
+
   const newsletterStorage = useNewsletterStorage();
 
   const form = useForm<NewsletterData>({
@@ -40,24 +60,15 @@ export function WaitlistForm({ className, onUnlockClothes }: WaitlistFormProps) 
 
   const subscription = useNewsletterSubscription();
 
-  useEffect(() => {
-    if (newsletterStorage.isSubscribed) {
-      setShowUnlockButton(true);
-    }
-  }, [newsletterStorage.isSubscribed]);
-
   const handleSubmit = (values: NewsletterData) => {
     setHasAttemptedSubmit(true);
     setSubmissionState("loading");
     subscription.mutate(values.email, {
       onSuccess: () => {
-        newsletterStorage.markAsSubscribed(values.email, 'waitlist');
-        setSubmissionState("success");
-        
-        // After success animation, show unlock button
-        setTimeout(() => {
-          setShowUnlockButton(true);
-        }, 2000);
+        newsletterStorage.markAsSubscribed(values.email, "waitlist");
+
+        // Immediately trigger the fade-to-black transition to carousel
+        onUnlockClothes?.();
       },
       onError: (error) => {
         setSubmissionState("error");
@@ -66,10 +77,6 @@ export function WaitlistForm({ className, onUnlockClothes }: WaitlistFormProps) 
         );
       },
     });
-  };
-
-  const handleUnlockClothes = () => {
-    onUnlockClothes?.();
   };
 
   const handleFormSubmit = (e: React.FormEvent) => {
@@ -92,49 +99,44 @@ export function WaitlistForm({ className, onUnlockClothes }: WaitlistFormProps) 
 
   return (
     <div className={`flex flex-col items-center ${className}`}>
-      {showUnlockButton ? (
-        <Button
-          type="button"
-          onClick={handleUnlockClothes}
-          className="bg-white/20 backdrop-blur-md border-none text-white hover:bg-white/30 transition-all duration-300 rounded-full px-6 py-4 sm:px-8 sm:py-6 text-md sm:text-base font-medium shadow-none hover:scale-105 active:scale-95 whitespace-nowrap h-[56px] sm:h-[72px] cursor-pointer"
-          style={{
-            boxShadow: "0 0 20px rgba(255,255,255,0.3)"
+      <span
+        className="relative inline-block overflow-hidden rounded-full p-[1px]"
+        style={{
+          boxShadow:
+            "0 0 20px rgba(255,255,255,0.3), inset 0 0 20px rgba(255,255,255,0.1)",
+        }}
+      >
+        <span className="absolute inset-[-1000%] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,rgba(255,255,255,0.4)_0deg,rgba(255,255,255,0.4)_15deg,transparent_16deg,transparent_344deg,rgba(255,255,255,0.4)_345deg)]" />
+        <motion.div
+          animate={{
+            width:
+              isExpanded || submissionState !== "input"
+                ? isDesktop
+                  ? "480px"
+                  : mobileExpandedWidth
+                : "auto",
           }}
-        >
-          <div className="flex items-center justify-center min-w-[120px]">
-            Unlock Clothes
-          </div>
-        </Button>
-      ) : (
-        <span
-          className="relative inline-block overflow-hidden rounded-full p-[1px]"
           style={{
-            boxShadow:
-              "0 0 20px rgba(255,255,255,0.3), inset 0 0 20px rgba(255,255,255,0.1)",
+            minWidth:
+              isExpanded || submissionState !== "input"
+                ? isDesktop
+                  ? "480px"
+                  : mobileExpandedWidth
+                : "auto",
+            transformOrigin: "right",
           }}
+          transition={{
+            type: "spring",
+            bounce: 0.1,
+            duration: 0.5,
+          }}
+          className="relative bg-white/10 backdrop-blur-md text-white rounded-full shadow-lg flex items-center overflow-hidden h-[56px] sm:h-[72px]"
         >
-          <span className="absolute inset-[-1000%] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,rgba(255,255,255,0.4)_0deg,rgba(255,255,255,0.4)_15deg,transparent_16deg,transparent_344deg,rgba(255,255,255,0.4)_345deg)]" />
-          <motion.div
-            animate={{
-              width: isExpanded || submissionState !== "input" ? "400px" : "auto",
-            }}
-            style={{
-              minWidth:
-                isExpanded || submissionState !== "input" ? "400px" : "auto",
-              transformOrigin: "right",
-            }}
-            transition={{
-              type: "spring",
-              bounce: 0.1,
-              duration: 0.5,
-            }}
-            className="relative bg-white/10 backdrop-blur-md text-white rounded-full shadow-lg flex items-center overflow-hidden h-[56px] sm:h-[72px]"
-          >
-            {submissionState === "success" ? (
-              <SuccessState />
-            ) : submissionState === "error" ? (
-              <ErrorState errorMessage={errorMessage} onReset={resetForm} />
-            ) : (
+          {submissionState === "success" ? (
+            <SuccessState />
+          ) : submissionState === "error" ? (
+            <ErrorState errorMessage={errorMessage} onReset={resetForm} />
+          ) : (
             <motion.form
               layout
               onSubmit={handleFormSubmit}
@@ -144,7 +146,11 @@ export function WaitlistForm({ className, onUnlockClothes }: WaitlistFormProps) 
               <motion.div
                 layout
                 animate={{
-                  width: isExpanded ? "240px" : "0px",
+                  width: isExpanded
+                    ? isDesktop
+                      ? "320px"
+                      : `${parseInt(mobileExpandedWidth) - 160}px`
+                    : "0px",
                 }}
                 transition={{
                   type: "spring",
@@ -182,17 +188,18 @@ export function WaitlistForm({ className, onUnlockClothes }: WaitlistFormProps) 
                   <div className="flex items-center justify-center min-w-[120px]">
                     {submissionState === "loading" ? (
                       <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : isExpanded ? (
+                      "Unlock Clothes"
                     ) : (
-                      "Join the Waitlist"
+                      "Join The Wet List"
                     )}
                   </div>
                 </Button>
               </motion.div>
             </motion.form>
-            )}
-          </motion.div>
-        </span>
-      )}
+          )}
+        </motion.div>
+      </span>
 
       {/* Custom validation error display */}
       {hasAttemptedSubmit && form.formState.errors.email && (
