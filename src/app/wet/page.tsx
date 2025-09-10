@@ -391,7 +391,7 @@ const CircularGalleryDemo = () => {
 
         {/* Hint text below carousel */}
         <motion.div
-          className="absolute left-1/2 -translate-x-1/2 bottom-28 sm:bottom-32 md:bottom-32 lg:bottom-36 z-20 pointer-events-none text-center"
+          className="absolute left-1/2 -translate-x-1/2 bottom-26 sm:bottom-32 md:bottom-32 lg:bottom-36 z-20 pointer-events-none text-center"
           initial={{ opacity: 0 }}
           animate={showHint ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.3 }}
