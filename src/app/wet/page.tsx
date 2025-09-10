@@ -181,7 +181,7 @@ const CircularGalleryDemo = () => {
     "initial" | "animating" | "complete"
   >("initial");
   const [animationProgress, setAnimationProgress] = useState(0);
-  
+
   // Hint animation state
   const [showHint, setShowHint] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
@@ -208,8 +208,8 @@ const CircularGalleryDemo = () => {
     };
 
     // Detect touch device
-    setIsTouchDevice('ontouchstart' in window);
-    
+    setIsTouchDevice("ontouchstart" in window);
+
     updateDimensions();
     window.addEventListener("resize", updateDimensions);
     return () => window.removeEventListener("resize", updateDimensions);
@@ -269,15 +269,15 @@ const CircularGalleryDemo = () => {
     if (animationPhase === "complete") {
       const hintTimer = setTimeout(() => {
         setShowHint(true);
-        
+
         // Hide hint after 4 seconds
         const hideTimer = setTimeout(() => {
           setShowHint(false);
         }, 4000);
-        
+
         return () => clearTimeout(hideTimer);
       }, 600); // Wait a bit after animation completes
-      
+
       return () => clearTimeout(hintTimer);
     }
   }, [animationPhase]);
@@ -388,7 +388,7 @@ const CircularGalleryDemo = () => {
             </Link>
           </motion.div>
         </div>
-        
+
         {/* Hint text below carousel */}
         <motion.div
           className="absolute left-1/2 -translate-x-1/2 bottom-24 sm:bottom-28 md:bottom-32 lg:bottom-36 z-20 pointer-events-none text-center"
@@ -399,36 +399,44 @@ const CircularGalleryDemo = () => {
           <div className="flex items-center gap-3">
             <motion.span
               className="text-white/60 text-lg font-light"
-              initial={{ x: 0 }}
-              animate={showHint ? { 
-                x: [-5, -12, -8]
-              } : { x: 0 }}
-              transition={{ 
+              initial={{ y: 0 }}
+              animate={
+                showHint
+                  ? {
+                      y: [0, -5, -3],
+                    }
+                  : { y: 0 }
+              }
+              transition={{
                 duration: 1.5,
                 repeat: showHint ? Infinity : 0,
                 repeatType: "reverse",
-                ease: "easeInOut"
+                ease: "easeInOut",
               }}
             >
-              &lt;
+              ↑
             </motion.span>
             <p className="text-white/80 text-base sm:text-lg font-medium drop-shadow-lg">
-              {isTouchDevice ? 'Tap to view' : 'Click to view'}
+              {isTouchDevice ? "Tap image to view" : "Click any image to view"}
             </p>
             <motion.span
               className="text-white/60 text-lg font-light"
-              initial={{ x: 0 }}
-              animate={showHint ? { 
-                x: [5, 12, 8]
-              } : { x: 0 }}
-              transition={{ 
+              initial={{ y: 0 }}
+              animate={
+                showHint
+                  ? {
+                      y: [0, -5, -3],
+                    }
+                  : { y: 0 }
+              }
+              transition={{
                 duration: 1.5,
                 repeat: showHint ? Infinity : 0,
                 repeatType: "reverse",
-                ease: "easeInOut"
+                ease: "easeInOut",
               }}
             >
-              &gt;
+              ↑
             </motion.span>
           </div>
         </motion.div>
