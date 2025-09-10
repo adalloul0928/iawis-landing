@@ -372,7 +372,7 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                 key={item.photo.url}
                 role="group"
                 aria-label={item.common}
-                className="absolute cursor-pointer pointer-events-none"
+                className="absolute cursor-pointer pointer-events-none hover:scale-[1.02] transition-transform duration-300"
                 style={{
                   width: `${cardWidth}px`,
                   height: `${cardHeight}px`,
@@ -394,7 +394,7 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                 }}
               >
                 <div
-                  className="relative w-full h-full rounded-lg shadow-2xl overflow-hidden group border border-border bg-card/90 dark:bg-card/60"
+                  className="relative w-full h-full rounded-lg shadow-2xl overflow-hidden group border border-border bg-card/90 dark:bg-card/60 hover:shadow-3xl transition-shadow duration-300"
                   style={{
                     willChange: "transform",
                     transform: "translateZ(0)",
@@ -405,7 +405,7 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                     src={item.photo.url}
                     alt={item.photo.text}
                     fill
-                    className="object-cover select-none"
+                    className="object-cover select-none group-hover:scale-[1.02] transition-transform duration-300"
                     style={{ objectPosition: item.photo.pos || "center" }}
                     priority={true}
                     loading="eager"
@@ -413,6 +413,22 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                     quality={95}
                     draggable={false}
                   />
+                  {/* Expand icon that appears on hover */}
+                  <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 w-6 h-6 bg-black/10 backdrop-blur-lg rounded-full flex items-center justify-center transition-all duration-300 border border-white/30">
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-white"
+                    >
+                      <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+                    </svg>
+                  </div>
                   {/* Replaced text-primary-foreground with text-white for consistent color */}
                   <div
                     className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/80 to-transparent text-white"
