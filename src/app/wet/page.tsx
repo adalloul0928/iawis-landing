@@ -182,24 +182,68 @@ const CircularGalleryDemo = () => {
   >("initial");
   const [animationProgress, setAnimationProgress] = useState(0);
 
-  // Update dimensions based on screen size and detect touch device
+  // Update dimensions based on screen size with viewport height consideration for desktop
   useEffect(() => {
     const updateDimensions = () => {
       const width = window.innerWidth;
-      if (width >= 1536) {
-        setDimensions({ radius: 900, cardWidth: 350, cardHeight: 437.5 });
-      } else if (width >= 1440) {
-        setDimensions({ radius: 750, cardWidth: 290, cardHeight: 355 });
-      } else if (width >= 1280) {
-        setDimensions({ radius: 800, cardWidth: 325, cardHeight: 405 });
-      } else if (width >= 1024) {
-        setDimensions({ radius: 700, cardWidth: 260, cardHeight: 340 });
-      } else if (width >= 640) {
-        setDimensions({ radius: 650, cardWidth: 240, cardHeight: 320 });
-      } else if (width >= 375) {
-        setDimensions({ radius: 550, cardWidth: 200, cardHeight: 250 });
+      const height = window.innerHeight;
+      const aspectRatio = 1.25; // Current card aspect ratio (height/width)
+      const MIN_CARD_HEIGHT = 280; // Minimum card height for desktop
+
+      // For desktop screens (>= 1024px), apply viewport height constraints
+      if (width >= 1024) {
+        // Calculate the maximum safe card height (leaving room for logo and padding)
+        // Use 45% of viewport height to ensure logo has space
+        const maxSafeCardHeight = height * 0.45;
+
+        // Determine base dimensions from width breakpoints
+        let baseCardWidth, baseCardHeight, baseRadius;
+
+        if (width >= 1536) {
+          baseCardWidth = 350;
+          baseCardHeight = 437.5;
+          baseRadius = 900;
+        } else if (width >= 1440) {
+          baseCardWidth = 320;
+          baseCardHeight = 400;
+          baseRadius = 850;
+        } else if (width >= 1280) {
+          baseCardWidth = 300;
+          baseCardHeight = 375;
+          baseRadius = 800;
+        } else { // width >= 1024
+          baseCardWidth = 260;
+          baseCardHeight = 340;
+          baseRadius = 700;
+        }
+
+        // Apply height constraint, but respect minimum
+        const constrainedHeight = Math.max(
+          MIN_CARD_HEIGHT,
+          Math.min(baseCardHeight, maxSafeCardHeight)
+        );
+
+        // Calculate width based on constrained height
+        const finalCardWidth = constrainedHeight / aspectRatio;
+
+        // Scale radius proportionally if cards were reduced
+        const scaleFactor = constrainedHeight / baseCardHeight;
+        const finalRadius = baseRadius * scaleFactor;
+
+        setDimensions({
+          radius: finalRadius,
+          cardWidth: finalCardWidth,
+          cardHeight: constrainedHeight,
+        });
       } else {
-        setDimensions({ radius: 450, cardWidth: 160, cardHeight: 200 });
+        // Mobile and tablet screens - keep current behavior (works well)
+        if (width >= 640) {
+          setDimensions({ radius: 650, cardWidth: 240, cardHeight: 320 });
+        } else if (width >= 375) {
+          setDimensions({ radius: 550, cardWidth: 200, cardHeight: 250 });
+        } else {
+          setDimensions({ radius: 450, cardWidth: 160, cardHeight: 200 });
+        }
       }
     };
 
@@ -222,8 +266,8 @@ const CircularGalleryDemo = () => {
     setSelectedItem(galleryData[index]);
   }, []);
 
-  // Calculate dynamic logo position - position at 20% of space above carousel for better visual balance
-  const logoTopPosition = `calc((50vh - ${dimensions.cardHeight / 2}px) * 0.15)`;
+  // Calculate dynamic logo position with minimum clearance guarantee
+  const logoTopPosition = `max(20px, calc((50vh - ${dimensions.cardHeight / 2}px) * 0.15))`;
 
   // Start animation when page loads
   useEffect(() => {
