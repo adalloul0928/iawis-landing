@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { createPortal } from "react-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import { GalleryItem } from "./circular-gallery2";
+import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import type { GalleryItem } from "./circular-gallery2";
 
 interface ExpandedGalleryProps {
   selectedItem: GalleryItem | null;
@@ -39,10 +39,10 @@ export function ExpandedGallery({
       if (e.key === "Escape") {
         onClose();
       } else if (e.key === "ArrowLeft") {
-        const newIndex = Math.max(0, currentIndex - 1);
+        const newIndex = (currentIndex - 1 + items.length) % items.length;
         onNavigate(newIndex);
       } else if (e.key === "ArrowRight") {
-        const newIndex = Math.min(items.length - 1, currentIndex + 1);
+        const newIndex = (currentIndex + 1) % items.length;
         onNavigate(newIndex);
       }
     };
@@ -119,15 +119,16 @@ export function ExpandedGallery({
             // Check for swipe gesture on mobile only
             if (window.innerWidth <= 768) {
               if (offset.x > swipeThreshold || velocity.x > velocityThreshold) {
-                // Swipe right - go to previous
-                const newIndex = Math.max(0, currentIndex - 1);
+                // Swipe right - go to previous (with looping)
+                const newIndex =
+                  (currentIndex - 1 + items.length) % items.length;
                 onNavigate(newIndex);
               } else if (
                 offset.x < -swipeThreshold ||
                 velocity.x < -velocityThreshold
               ) {
-                // Swipe left - go to next
-                const newIndex = Math.min(items.length - 1, currentIndex + 1);
+                // Swipe left - go to next (with looping)
+                const newIndex = (currentIndex + 1) % items.length;
                 onNavigate(newIndex);
               }
             }
